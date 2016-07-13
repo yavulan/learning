@@ -17,7 +17,7 @@ function maximumAndSecondLargest( array ){
         for( var i = 0; i < array.length; i++ ){
             if( array[i] > max ){
                 secondLargest = max;
-                max = array [i];
+                max = array[i];
             } else
             if ( array[i] < max && array[i] > secondLargest ){
                 secondLargest = array[i];
