@@ -48,7 +48,8 @@ var toStrings = [
 // 06. Other conversions
 var toOthers = [
     !!'0', // => 'true'
-    !!+'0' // => 'false'
+    !!+'0', // => 'false'
+    !!+'ten' // => 'false'
 ];
 
 //consoleArray( toOthers );
