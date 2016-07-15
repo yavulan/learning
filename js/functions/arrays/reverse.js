@@ -1,8 +1,8 @@
 var numbers = [1,2,3,4,5,6,7,8,9];
 var arr = [1,2,3,4,5,6,7,8,9,'String',null];
 
-console.log( reverseNumbersArray(numbers) );
-console.log( reverseAnyArray(arr) );
+//console.log( reverseNumbersArray(numbers) );
+//console.log( reverseAnyArray(arr) );
 
 function reverseNumbersArray( array ){
     if( Array.isArray(array) ){
@@ -32,5 +32,16 @@ function reverseAnyArray( array ){
         }
 
         return array;
+    }
+}
+
+console.log( reverseArrayByReduce(arr) );
+
+function reverseArrayByReduce ( array ){
+    if( Array.isArray(array) ) {
+        return array.reduce( function (all, item, index) {
+            all.unshift( item );
+            return all;
+        }, []);
     }
 }
