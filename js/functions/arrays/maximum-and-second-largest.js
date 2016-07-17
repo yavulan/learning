@@ -35,6 +35,21 @@ function maximumAndSecondLargest( array ){
     }
 }
 
+function maxAndPremaxByReduce ( array ){
+    if( Array.isArray( array ) ){
+        return array.reduce( function(res, item, index){
+            res.max = ( item > res.max ) ? item + ( res.premax = res.max, 0 ) : res.max;
+            res.premax = ( item < res.max && item > res.premax ) ? item : res.premax;
+
+            if( index === array.length-1 ) res.premax = ( res.premax === -Infinity ) ? void 0 : res.premax;
+
+            return res;
+        },{max: -Infinity, premax: -Infinity} );
+    } else {
+        // Not an array
+    }
+}
+
 function consoleArr(){
     for( var i = 0; i < arrs.length; i++ ){
         var res = maximumAndSecondLargest( arrs[i] );
