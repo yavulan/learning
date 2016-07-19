@@ -50,6 +50,18 @@ function maxAndPremaxByReduce ( array ){
     }
 }
 
+function maxAndPremaxBySorting(arr) {
+    //arr.sort((a, b) = > b - a);
+    arr.sort( function(a,b){
+        return b-a;
+    });
+
+    return {
+        max: arr[0],
+        premax: (arr[0] === arr[1]) ? void 0 : arr[1]
+    };
+}
+
 function consoleArr(){
     for( var i = 0; i < arrs.length; i++ ){
         var res = maximumAndSecondLargest( arrs[i] );
