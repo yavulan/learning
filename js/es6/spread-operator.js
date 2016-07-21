@@ -28,3 +28,28 @@ var b = [0, ...a, 4]; // [0, 1, 2, 3, 4]
 
 // Some kind of analogue in es5
 var d = [0].concat(a, 4); // [0, 1, 2, 3, 4]
+
+/*
+* 3. Destructing
+* */
+var [a, b] = [1, 2]; // a = 1; b = 2
+// Elision lets you use the syntax of Array “holes” to skip elements during destructuring:
+var [,, x, y] = ['a', 'b', 'c', 'd']; // x = 'c'; y = 'd'
+
+// exchange two values
+[a, b] = [b, a];
+
+/*
+* Rest operator (...) - same syntax
+* extract the remaining elements of an Array into an Array.
+ * */
+
+var [x, y, ...z] = ['a']; // x='a'; y=undefined; z=[]
+var [a, ...b] = [1, 2, 3]; // a = 1; b = [2, 3]
+
+// must be the last argument in the function definition argument list:
+function rest(one, ...two){
+    return two.map( (val) => val * one);
+}
+
+rest(2, 1, 2, 3, 4); // [2, 4, 6, 8]
