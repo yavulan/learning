@@ -15,15 +15,13 @@
 
 function secondLargest( arr ){
     if ( Array.isArray(arr) ){
-        arr = arr.filter( function (val){
-                if( typeof val === 'string' ) return !Number.isNaN( val );
-                if( typeof val === 'number' ) return true;
-
-                return false;
-            }).map( (val) => +val )
-            .sort( (a,b) => b-a )
-            .filter( (val, i, arr) => arr.indexOf(val) == i );
-
-        return arr[1];
+        return arr.filter( function (val){
+                    if( typeof val === 'string' ) return !Number.isNaN( val );
+                    return typeof val === 'number';
+                })
+                .map( (val) => +val )
+                .sort( (a,b) => b-a )
+                .filter( (val, i, arr) => arr.indexOf(val) == i )
+                [1];
     }
 }
