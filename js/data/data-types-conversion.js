@@ -33,6 +33,12 @@ var toNumbers = [
     +'3 apples' // => NaN
 ];
 
+//      04a. To Scientific notation (N x 10^a)
+var toScNotation = [
+    (200).toExponential(), // => "2e+2"
+    (0.000001).toExponential() // => "1e-6"
+];
+
 //consoleArray( toNumbers );
 
 // 05. To String
