@@ -31,7 +31,7 @@ Source: [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/Jav
   * String
   * RegExp
 * [Indexed collections](#Indexed_collections)
-  * [Array](#Array)
+  * [Array](#array)
   * [Typed Arrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays)
 * [Keyed collections]()
   * Map
@@ -57,3 +57,28 @@ Source: [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/Jav
 ## Indexed collections<a name="Indexed_collections"></a>
 
 ### Array
+#### Array Creating
+1. Manual
+
+  ```javascript
+  var arr = [];
+  ```
+2. Using Spread operator
+
+ ```javascript
+ [...Array(2)] // [undefined, undefined]
+ [...'String'] // ["s", "t", "r", "i", "n", "g"]
+ ```
+3. Matching RegExp (RegExp.exec, String.match, and String.replace)
+
+ ```javascript
+ ( 'aa' ).match( /a/g ) // ["a", "a"]
+ ```
+4. Using Array.from(), Array.of()
+
+#### Array.length
+Equals to highest index + 1
+```javascript
+[1, 2, 3].length = 2 // [1, 2]
+[1, 2, 3].length = 4 // [1, 2, 3]; length === 4
+```
