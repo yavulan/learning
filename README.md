@@ -66,19 +66,95 @@ Source: [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/Jav
 2. Using Spread operator
 
  ```javascript
- [...Array(2)] // [undefined, undefined]
- [...'String'] // ["s", "t", "r", "i", "n", "g"]
+ [...Array( 2 )]; // [undefined, undefined]
+ [...'String']; // ["s", "t", "r", "i", "n", "g"]
  ```
 3. Matching RegExp (RegExp.exec, String.match, and String.replace)
 
  ```javascript
- ( 'aa' ).match( /a/g ) // ["a", "a"]
+ ( 'aa' ).match( /a/g ); // ["a", "a"]
  ```
 4. Using Array.from(), Array.of()
+5. Using String.split()
 
 #### Array.length
-Equals to highest index + 1
+Equals to ( highest index + 1 )
 ```javascript
-[1, 2, 3].length = 2 // [1, 2]
-[1, 2, 3].length = 4 // [1, 2, 3]; length === 4
+[1, 2, 3].length; // 3
+[1, 2, 3].length = 2; // [1, 2]
+[1, 2, 3].length = 4; // [1, 2, 3]; length === 4
+```
+
+#### Mutator methods
+
+##### copyWithin()
+High-performance method to shift the data of an Array or TypedArray
+```javascript
+// arr.copyWithin( whereToPut[, fromStart[, fromEnd]] )
+[1, 2, 3, 4, 5].copyWithin( 1 ); // [1, 1, 2, 3, 4]
+[1, 2, 3, 4, 5].copyWithin( 0, 2 ); // [3, 4, 5, 4, 5]
+[1, 2, 3, 4, 5].copyWithin( 0, 2, 3 ); // [3, 2, 3, 4, 5]
+[1, 2, 3, 4, 5].copyWithin( -1, -2 ); // [1, 2, 3, 4, 4]
+
+[1, 2, 3, 4, 5].copyWithin( 0, 2, 1 ); // [1, 2, 3, 4, 5]
+[1, 2, 3, 4, 5].copyWithin( 0, 6 ); // [1, 2, 3, 4, 5]
+```
+
+##### fill()
+Fills all the elements of an array from a start index to an end index with a static value.
+```javascript
+// arr.fill( value[, start = 0[, end = this.length]] )
+[...Array( 3 )].fill( 2 ); // [2, 2, 2]
+[1, 2, 3, 4].fill( ':)', 1, 3 ); // [1, ":)", ":)", 4]
+```
+
+##### pop()
+Removes the last element from an array and returns that element (undefined if the array is empty)
+```javascript
+[1, 2, 3].pop(); // 3, array reduced to [1, 2]
+[].pop(); // undefined
+```
+
+##### push()
+Adds one or more elements to Array. Start inserting from array[array.length].
+Returns the new length of the array.
+
+*If length isNaN, 0 is used as starting point. If length nonexistent, length will be created.*
+
+```javascript
+// arr.push( element1, ..., elementN )
+[1, 2, 3].push( 4, 5 ); // 5; array: [1, 2, 3, 4, 5]
+['s'].push( ...'tring' ); // 6; array: ["s", "t", "r", "i", "n", "g"]
+
+var arr = [1];
+arr.length = 2;
+arr.push( 2 ); // 3; arr: [1, undefined, 2]
+
+// Works on objects
+var obj = {};
+[].push.call( obj, {works: 'wow'} ); // 1; obj: Object {0: Object, length: 1}
+```
+
+##### reverse()
+Reverses an array in place and return reversed array.
+```javascript
+[1, 2, 3].reverse() // [3, 2, 1]
+```
+
+##### shift()
+Removes the first element and shifts the values at consecutive indexes down, then returns the removed value (if the length is 0, undefined is returned).
+Changes the length of the array.
+```javascript
+[1, 2, 3].shift(); // 1; array: [2, 3]
+[].shift(); // undefined
+[...Array( 3 )].fill( 1, 1 ).shift() // undefined; array: [1, 1]
+```
+
+##### unshift()
+Adds one or more elements to Array. Start inserting from array[0].
+Returns the new length of the array.
+```javascript
+// arr.unshift( element1, ..., elementN )
+[1, 2, 3].unshift( -1, 0 ); // 5; array: [-1, 0, 1, 2, 3]
+['g'].unshift( ...'strin' ); // 6; array: ["s", "t", "r", "i", "n", "g"]
 ```
