@@ -1,5 +1,5 @@
 # Javascript Built-in objects
-Source: [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+Source: [developer.mozilla.org↗](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
 * [Value properties](#Value_properties)
   * Infinity
@@ -22,7 +22,7 @@ Source: [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/Jav
   * Function
   * Boolean
   * Symbol
-  * [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
+  * [Error↗](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
 * [Numbers and Dates]() 
   * Numbers
   * Math
@@ -32,13 +32,13 @@ Source: [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/Jav
   * RegExp
 * [Indexed collections](#Indexed_collections)
   * [Array](#array)
-  * [Typed Arrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays)
+  * [Typed Arrays↗](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays)
 * [Keyed collections]()
   * Map
   * Set
   * WeakMap
   * WeakSet
-* [Vector Collections](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SIMD) 
+* [Vector Collections↗](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SIMD) 
 * [Structured data]()
   * ArrayBuffer
   * DataView
@@ -50,7 +50,7 @@ Source: [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/Jav
 * [Reflexion]()
   * Reflect
   * Proxy
-* [Internationalization](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl)
+* [Internationalization↗](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl)
 * [Arguments]()
 
 
@@ -82,7 +82,7 @@ Equals to ( highest index + 1 )
 ```javascript
 [1, 2, 3].length; // 3
 [1, 2, 3].length = 2; // [1, 2]
-[1, 2, 3].length = 4; // [1, 2, 3]; length === 4
+[1, 2, 3].length = 4; // [1, 2, 3, undefined]; length === 4
 ```
 
 #### Mutator methods
@@ -160,7 +160,7 @@ Returns the new length of the array.
 ```
 
 ##### sort()
-Sorts elements in place and returns the array (default order by Unicode code points). The sort is not necessarily [stable](https://en.wikipedia.org/wiki/Sorting_algorithm#Stability). 
+Sorts elements in place and returns the array (default order by Unicode code points). The sort is not necessarily [stable↗](https://en.wikipedia.org/wiki/Sorting_algorithm#Stability). 
 ```javascript
 // arr.sort( [compareFunction] )
 compareFunction( a, b ){
@@ -201,3 +201,105 @@ Remove existing elements and/or add new elements. Ruturns an array containing th
 [1, 2, 3].splice( 1, 0, 8 ); // []; arrray: [1, 8, 2, 3]
 [].splice( 0, 0, ...'string' ); // []; array: ["s", "t", "r", "i", "n", "g"]
 ```
+
+### Accessor methods
+
+##### concat()
+Returns a new array comprised of called array joined with the array(s) and/or value(s) provided as arguments.
+```javascript
+// var newArray = oldArray.concat( value1[, value2[, ...[, valueN]]] )
+[1, 2].concat( 3, [4, 5] ); // [1, 2, 3, 4, 5]
+
+// Array copy for chaining with mutating methods
+[1, 2, 3].concat(); // [1, 2, 3]
+```
+
+##### includes()
+Determines whether an array includes a certain element. Returns true or false.
+```javascript
+// var boolean = array.includes( searchElement[, fromIndex = 0] )
+[1, 2, 3].includes( 1 ); // true
+[1, 2, 3].includes( 1, -2 ); // false
+[...'string'].includes( 't', 1 ); // true
+```
+
+##### join()
+Joins all elements of an array into a string with a separator.
+```javascript
+// string = array.join( [separator = ','] )
+[1, 2, 3].join(); // "1,2,3"
+['H', 'e', 'l', 'l', 'o'].join( '' ); // "Hello"
+
+// separator is converted to a string
+[1, 3].join( 2 ); // "123"
+
+// Create repetetive patterns
+[...Array( 5 )].join( 'abc' ); // "abcabcabcabc"
+```
+
+##### slice()
+Returns a copy of a portion of an array as a new array object.
+```javascript
+// array.slice( [begin = 0 [, end = array.length ]] )
+[1, 2, 3].slice( 1, 2 ); // [2]
+[1, 2, 3].slice( -2 ); // [2, 3]
+
+// In case if second argument has to be provided anyway
+var arr = [1, 2, 3];
+arr.slice( -1, arr.length ); // [3]
+
+// Arguments to array
+Array.prototype.slice.call( arguments );
+
+// Array copy for chaining with mutating methods
+[1, 2, 3].slice(); // [1, 2, 3]
+```
+
+##### toString()
+Returns string representing elements of the specified array.
+Join items with ','. Generic, can be used with any object.
+
+JavaScript calls toString() automatically when an array is to be represented as a text value or when an array is referred to in a string concatenation.
+```javascript
+[...Array( 3 )].toString(); // ",,"
+[1, 2, 3].toString(); // "1,2,3"
+
+'straw'.concat( ['b', 'e', 'r', 'r', 'y'] ) // "strawb,e,r,r,y"
+( {cherry : 42} ).toString(); // "[object Object]"
+```
+
+##### toLocaleString()
+Returns string representing elements (converted to Strings using their toLocaleString methods) of the specified array.
+Separated by a locale-specific String (such as a comma ',').
+```javascript
+['today is', new Date].toLocaleString() // "today is,28.07.2016, 14:24:38"
+```
+
+
+##### indexOf()
+Returns the first index at which a given element can be found in the array, or -1 if it is not present.
+
+Compares ${searchElement} to elements of the Array using strict equality (===).
+If the provided ${fromIndex} is negative, the array is still searched from front to back. If the calculated index is less than 0, then the whole array will be searched.
+```javascript
+// array.indexOf( searchElement[, fromIndex = 0] )
+[1, 1, 1].indexOf( 1 ); // 0
+[1, 2, 3].indexOf( 1, 1 ); // -1
+[1, 2, 3].indexOf( 1, -1 ); // -1
+
+// to boolean
+!!~[1, 2, 3].indexOf( 1 ); // true; equals to [1, 2, 3].includes( 1 )
+```
+
+##### lastIndexOf()
+Returns the last index at which a given element can be found in the array, or -1 if it is not present.
+
+The array is searched backwards, starting at ${fromIndex}.
+If the provided ${fromIndex} is positive, the array is still searched from back to front. If the calculated index is less than 0, then array will not be searched.
+```javascript
+// array.lastIndexOf( searchElement[, fromIndex = array.length - 1] )
+[1, 1, 1].lastIndexOf( 1 ); // 2
+[1, 1, 1].lastIndexOf( 1, 1 ); // 1
+[1, 1, 1].lastIndexOf( 1, -4 ); // -1
+```
+
