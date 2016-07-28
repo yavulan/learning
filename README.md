@@ -158,3 +158,46 @@ Returns the new length of the array.
 [1, 2, 3].unshift( -1, 0 ); // 5; array: [-1, 0, 1, 2, 3]
 ['g'].unshift( ...'strin' ); // 6; array: ["s", "t", "r", "i", "n", "g"]
 ```
+
+##### sort()
+Sorts elements in place and returns the array (default order by Unicode code points). The sort is not necessarily [stable](https://en.wikipedia.org/wiki/Sorting_algorithm#Stability). 
+```javascript
+// arr.sort( [compareFunction] )
+compareFunction( a, b ){
+	return < 0 ? a[iNew] < b[iNew];
+    return === 0 ? a[iNew] = a[iOld], b[iNew] = b[iOld]; // NOT guaranteed by ECMAscript standart! 
+    return > 0 ? a[iNew] > b[iNew];
+}
+
+// Sort numbers
+[2, 4, 0, -3, 2].sort( (a, b) => a - b ) // [-3, 0, 2, 2, 4]
+
+// Stable sorting
+// General idea: http://blog.vjeux.com/2010/javascript/javascript-sorting-table.html
+array.concat() // using array copy to save proper indexes of parent array
+	 .sort( function(a, b) {
+	    var aConition = 'smthn like a.charCodeAt()';
+	    var bCondition = 'smthn like b.charCodeAt()';
+        
+	    return ( aConition === bCondition ) ? 
+        	   array.indexOf( a ) - array.indexOf( b ) :
+        	   ( aConition < bCondition ) ? -1 : 1;
+     });
+     
+// Reverse array by sorting
+arr = arr.concat().sort( (a, b) => ( arr.indexOf(a) < arr.indexOf(b) ) ? 1 : -1 );
+     
+// Sort by characters(allowed non-ASCII), ignore case
+[...'Калина'].sort( (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()) ); // ["а", "а", "и", "К", "л", "н"]
+```
+
+##### splice() 
+Remove existing elements and/or add new elements. Ruturns an array containing the deleted elements (or empty array, if no elements were removed). 
+```javascript
+// array.splice( start = 0, deleteCount = ( this.length - start )[, itemToAdd1[, itemToAdd2[, ...]]] )
+
+[1, 2, 3].splice( 0 ); // [1, 2, 3]; arrray: []
+[1, 2, 3].splice( -2, 1 ); // [2]; arrray: [1, 3]
+[1, 2, 3].splice( 1, 0, 8 ); // []; arrray: [1, 8, 2, 3]
+[].splice( 0, 0, ...'string' ); // []; array: ["s", "t", "r", "i", "n", "g"]
+```
