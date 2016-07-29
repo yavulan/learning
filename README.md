@@ -356,3 +356,20 @@ Executes until it finds element where callback returns a falsy value and immedia
 [1, 2, 3].every( val => val > 1 ); // false
 ```
 
+##### some()
+Tests whether some element in the array passes the test implemented by the provided function.
+
+Executes until it finds element where callback returns a truthy value and immediately returns true; otherwise, returns false.
+```javascript
+// array.some( (currentValue[, index[, [array]]) => {}[, thisArg] )
+[1, 2, 3].some( val => val === 1 ); // true
+[1, 2, 3].some( val => val <= 1 ); // true
+```
+
+##### filter()
+Return a new array with all elements that pass the test implemented by the provided function (includes all the values for which callback returns a truthy value).
+```javascript
+// array.filter( (currentValue[, index[, [array]]) => {}[, thisArg] )
+[1, 2, 3].filter( val => val > 1 ); // [2, 3]
+```
+
