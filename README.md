@@ -303,3 +303,56 @@ If the provided ${fromIndex} is positive, the array is still searched from back 
 [1, 1, 1].lastIndexOf( 1, -4 ); // -1
 ```
 
+### Iteration methods
+If you must mutate the array, copy it into a new array.
+
+The range of elements processed is set before the first invocation of callback.
+If the values of existing elements of the array are changed, the value passed to callback will be the value at the time method visits them; elements that are deleted before being visited are not visited.
+
+##### forEach()
+Executes a provided function once per array element in ascending order. It is not invoked for index properties that have been deleted or are uninitialized. There is no way to stop or break a forEach() loop other than by throwing an exception. 
+
+Returns undefined, not chainable. 
+
+Using forEach() is controversial due to [performance reasons↗](https://jsperf.com/foreach-vs-loop). Alternative is for loop.
+```javascript
+// array.forEach( ([currentValue[, index[, [array]]]) => {}[, thisArg] )
+function Adder() {
+  this.sum = 0;
+}
+
+Adder.prototype.add = function( array ) {
+  array.forEach( val => this.sum += val, this );
+}
+
+var obj = new Adder();
+obj.add( [1, 2, 3] );
+obj.sum; // 6
+```
+
+##### entries()
+Returns a new Array Iterator object that contains the key/value pairs for each index in the array.
+```javascript
+[1, 2, 3].entries(); // ArrayIterator {}
+
+var eArr = [1, 2, 3].entries();
+eArr.next().value; // [0, 1] // [index, value]
+eArr.next().value; // [1, 2]
+
+var eArr = ['a', 'b', 'c'].entries();
+
+for (let e of eArr) {
+  console.log(e); // [0, "a"]; [1, "b"]; [2, "c"]
+}
+```
+
+##### every()
+Tests whether all elements in the array pass the test implemented by the provided function.
+
+Executes until it finds element where callback returns a falsy value and immediately returns false; otherwise, returns true. For an empty array returns true ([why?↗](https://en.wikipedia.org/wiki/Vacuous_truth#Vacuous_truths_in_mathematics)).
+```javascript
+// array.every( (currentValue[, index[, [array]]) => {}[, thisArg] )
+[1, 2, 3].every( val => val > 0 ); // true
+[1, 2, 3].every( val => val > 1 ); // false
+```
+
