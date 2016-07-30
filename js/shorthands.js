@@ -1,4 +1,5 @@
 /*
+* Short-circuiting
 * If {condition} do {action}
 * */
 if(condition) num++;
