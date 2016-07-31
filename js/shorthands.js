@@ -3,10 +3,12 @@
 * If {condition} do {action}
 * */
 if(condition) num++;
-
 // shorthand
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_Operators#Logical_AND
 condition && num++;
+
+if(!condition) num++;
+// shorthand
+condition || num++;
 
 /*
  * Even or odd
