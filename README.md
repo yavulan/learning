@@ -373,3 +373,30 @@ Return a new array with all elements that pass the test implemented by the provi
 [1, 2, 3].filter( val => val > 1 ); // [2, 3]
 ```
 
+##### find()
+Returns element, if it satisfies the provided testing function.  
+
+Method executes the callback once for each element until it finds one where callback returns a true value. If such an element is found, find immediately returns that element, otherwise undefined.
+```javascript
+// array.find( (currentElement[, index[, [array]]) => {}[, thisArg] )
+[1, 2, 3].find( val => val === 2 ); // 2 // Not too much sense for now, yeah?
+[1, 2, 3].find( val => val % 3 === 0 ); // 3
+
+var arr = [{name: 'bread', qnt: 4}, {name: 'water', qnt: 12}];
+arr.find( val => val.name === 'bread'); // Object {name: "bread", qnt: 4}
+```
+
+##### findIndex()
+Returns index of an element, if it satisfies the provided testing function.  
+
+Method executes the callback once for each element until it finds one where callback returns a true value. If such an element is found, find immediately returns index of  that element, otherwise -1.
+
+Callback is called even for indexes of entries not present in the array (sparse).
+```javascript
+// array.findIndex( (currentElement[, index[, [array]]) => {}[, thisArg] )
+[1, 2, 3].findIndex( val => val === 2 ); // 1
+[1, 2, 3].findIndex( val => val % 3 === 0 ); // 2
+
+var arr = [{name: 'bread', qnt: 4}, {name: 'water', qnt: 12}];
+arr.findIndex( val => val.name === 'bread'); // 0
+```
