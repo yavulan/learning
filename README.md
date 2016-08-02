@@ -400,3 +400,30 @@ Callback is called even for indexes of entries not present in the array (sparse)
 var arr = [{name: 'bread', qnt: 4}, {name: 'water', qnt: 12}];
 arr.findIndex( val => val.name === 'bread'); // 0
 ```
+
+##### keys()
+Returns a new Array Iterator that contains the keys for each index (including sparses) in the array.
+
+```javascript
+[1, 2, 3].keys(); // ArrayIterator {}
+[...[1, 2, 3].keys()]; // [0, 1, 2]
+[...[1, , , ].keys()]; // [0, 1, 2]
+
+var arr = [0];
+var iterator = arr.keys();
+iterator.next(); // Object {value: 0, done: false}
+iterator.next(); // Object {value: undefined, done: true}
+```
+
+##### map()
+Creates and returns new array with the results of calling a provided function on every element in this array.
+
+Callback is invoked only for indexes of the array which have assigned values, including undefined. It is not called for missing elements of the array.
+```javascript
+// array.map( (currentValue[, index[, [array]]) => {}[, thisArg] )
+[1, 4, 9].map( Math.sqrt ); // [1, 2, 3]
+[1, 2, 3].map( val => val * 42 ); // [42, 84, 126]
+
+[{name: 'John'}, {name: 'Alise'}].map( obj => (obj.name += ' Doe', obj) ); // [{name: 'John Doe'}, {name: 'Alise Doe'}]
+```
+
