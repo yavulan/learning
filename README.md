@@ -409,8 +409,7 @@ Returns a new Array Iterator that contains the keys for each index (including sp
 [...[1, 2, 3].keys()]; // [0, 1, 2]
 [...[1, , , ].keys()]; // [0, 1, 2]
 
-var arr = [0];
-var iterator = arr.keys();
+var iterator = [0].keys();
 iterator.next(); // Object {value: 0, done: false}
 iterator.next(); // Object {value: undefined, done: true}
 ```
@@ -427,3 +426,18 @@ Callback is invoked only for indexes of the array which have assigned values, in
 [{name: 'John'}, {name: 'Alise'}].map( obj => (obj.name += ' Doe', obj) ); // [{name: 'John Doe'}, {name: 'Alise Doe'}]
 ```
 
+##### values()
+Returns a new Array Iterator object that contains the values for each index in the array.
+```javascript
+var iterator = [1, 2].values();
+iterator.next(); // Object {value: 1, done: false}
+
+// or
+var iterator = [1, 2, 3].values();
+for ( let val of iterator ) {
+  console.log( val ); // 1 // 2 // 3
+}
+```
+
+##### \[@@iterator\]()
+The initial value of the @@iterator property is the same function object as the initial value of the values() property.
