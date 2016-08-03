@@ -472,6 +472,34 @@ Callback is invoked only for indexes of the array which have assigned values, in
 [{name: 'John'}, {name: 'Alise'}].map( obj => (obj.name += ' Doe', obj) ); // [{name: 'John Doe'}, {name: 'Alise Doe'}]
 ```
 
+
+##### reduce()
+Applies a function against an accumulator and each value of the array (from left-to-right) to reduce it to a single value.
+
+First call: if ${initialValue} is provided, then ${prevValOrInitial} will be equal to ${initialValue} and ${currVal} will be equal to the first value in the array. If no ${initialValue} was provided, then ${prevValOrInitial} will be equal to the first value in the array and ${currVal} will be equal to the second.
+
+If ${initialValue} isn't provided, reduce will execute the callback function starting at index 1, otherwise at 0.
+```javascript
+// array.reduce( (prevValOrInitial[, currVal[, index[, [array]]]) => {}[, initialValue] )
+[1, 2, 3].reduce( (a, b) => a + b ); // 6
+
+[1, 2, 3].reduce( (ret, x) => {
+	if( x % 2 ) ret.push( x );
+	return ret;
+}, [] ); // [1, 3]
+```
+
+##### reduceRight()
+Applies a function against an accumulator and each value of the array (from right-to-left) to reduce it to a single value.
+
+First call: if ${initialValue} is provided, then ${prevValOrInitial} will be equal to ${initialValue} and ${currVal} will be equal to the last value in the array. If no ${initialValue} was provided, then ${prevValOrInitial} will be equal to the last value in the array and ${currVal} will be equal to the second-to-last value.
+
+If ${initialValue} isn't provided, reduce will execute the callback function starting at index ${array.length-2}, otherwise at ${array.length-1}.
+```javascript
+// array.reduceRight( (prevValOrInitial[, currVal[, index[, [array]]]) => {}[, initialValue] )
+[1, 2, 3].reduceRight( (a, b) => a + b ); // 6
+```
+
 ##### values()
 Returns a new Array Iterator object that contains the values for each index in the array.
 ```javascript
