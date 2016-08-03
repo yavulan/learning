@@ -133,6 +133,21 @@ arr.push( 2 ); // 3; arr: [1, undefined, 2]
 // Works on objects
 var obj = {};
 [].push.call( obj, {works: 'wow'} ); // 1; obj: Object {0: Object, length: 1}
+
+// When dealing with big data, direct assignment of the array elements is faster than .push()
+// WARNING! Running this in a console take time, u may want to decrease array length
+
+// slower
+console.time( 'slowerArray' );
+	var arrSlower = [];
+	for ( var i = 0; i < 1e+8; i++ ) arrSlower.push( i );
+console.timeEnd( 'slowerArray' );
+
+// faster
+console.time( 'fasterArray' );
+	var arrFaster = [];
+	for ( var i = 0; i < 1e+8; i++ ) arrFaster[i] = i;
+console.timeEnd( 'fasterArray' );
 ```
 
 ##### reverse()
@@ -157,6 +172,19 @@ Returns the new length of the array.
 // arr.unshift( element1, ..., elementN )
 [1, 2, 3].unshift( -1, 0 ); // 5; array: [-1, 0, 1, 2, 3]
 ['g'].unshift( ...'strin' ); // 6; array: ["s", "t", "r", "i", "n", "g"]
+
+// much more slower than .push()
+// slower
+console.time( 'unshiftArray' );
+	var arrUnshifted = [];
+	for ( var i = 0; i < 1e+5; i++ ) arrUnshifted.unshift( i );
+console.timeEnd( 'unshiftArray' );
+
+// faster
+console.time( 'pushArray' );
+	var arrPushed = [];
+	for ( var i = 0; i < 1e+5; i++ ) arrPushed.push( i );
+console.timeEnd( 'pushArray' );
 ```
 
 ##### sort()
@@ -200,6 +228,11 @@ Remove existing elements and/or add new elements. Ruturns an array containing th
 [1, 2, 3].splice( -2, 1 ); // [2]; arrray: [1, 3]
 [1, 2, 3].splice( 1, 0, 8 ); // []; arrray: [1, 8, 2, 3]
 [].splice( 0, 0, ...'string' ); // []; array: ["s", "t", "r", "i", "n", "g"]
+
+// When iterating with mutating methods, remember to count from array end
+for ( var i = array.length - 1; i >= 0; i-- ){
+  if ( conition ) arr.splice( i, 1 );
+}
 ```
 
 ### Accessor methods
@@ -209,6 +242,7 @@ Returns a new array comprised of called array joined with the array(s) and/or va
 ```javascript
 // var newArray = oldArray.concat( value1[, value2[, ...[, valueN]]] )
 [1, 2].concat( 3, [4, 5] ); // [1, 2, 3, 4, 5]
+[].concat(...[[1, 2], [3, 4]]); // [1, 2, 3, 4]
 
 // Array copy for chaining with mutating methods
 [1, 2, 3].concat(); // [1, 2, 3]
@@ -260,6 +294,8 @@ Returns string representing elements of the specified array.
 Join items with ','. Generic, can be used with any object.
 
 JavaScript calls toString() automatically when an array is to be represented as a text value or when an array is referred to in a string concatenation.
+
+Performance of toString() is not always satisfactory. Alternative is JSON.stringify().
 ```javascript
 [...Array( 3 )].toString(); // ",,"
 [1, 2, 3].toString(); // "1,2,3"
@@ -368,9 +404,14 @@ Executes until it finds element where callback returns a truthy value and immedi
 
 ##### filter()
 Return a new array with all elements that pass the test implemented by the provided function (includes all the values for which callback returns a truthy value).
+
+Very slow with big data.
 ```javascript
 // array.filter( (currentValue[, index[, [array]]) => {}[, thisArg] )
 [1, 2, 3].filter( val => val > 1 ); // [2, 3]
+
+// how many 1 in arr?
+[1, 2, 1, 1, 2].filter( val => val == 1 ).length; // 3
 ```
 
 ##### find()
@@ -422,6 +463,11 @@ Callback is invoked only for indexes of the array which have assigned values, in
 // array.map( (currentValue[, index[, [array]]) => {}[, thisArg] )
 [1, 4, 9].map( Math.sqrt ); // [1, 2, 3]
 [1, 2, 3].map( val => val * 42 ); // [42, 84, 126]
+
+[...Array(3)].map( (_, i) => i ); // [0, 1, 2]
+
+// reverse an array
+[1, 2, 3].map( (_, i, arr) => arr[arr.length-1-i]); // [3, 2, 1]
 
 [{name: 'John'}, {name: 'Alise'}].map( obj => (obj.name += ' Doe', obj) ); // [{name: 'John Doe'}, {name: 'Alise Doe'}]
 ```
