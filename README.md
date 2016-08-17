@@ -28,7 +28,7 @@ Source: [developer.mozilla.org↗](https://developer.mozilla.org/en-US/docs/Web/
   * Math
   * Date
 * [Text processing]()
-  * String
+  * [String](String.md)
   * RegExp
 * [Indexed collections](#Indexed_collections)
   * [Array](#array)
