@@ -25,3 +25,16 @@ function specialListToArray ( list ){
 
     return result;
 }
+
+function arrayToList( array ){
+    var obj = {};
+
+    for ( var i = array.length-1; i >= 0; i-- ){
+        obj = {
+            value: array[i],
+            next: obj
+        };
+    }
+
+    return obj;
+}
