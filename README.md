@@ -85,6 +85,15 @@ Equals to ( highest index + 1 )
 [1, 2, 3].length = 4; // [1, 2, 3, undefined]; length === 4
 ```
 
+#### Array iteration
+Fastest method is for loop with length caching.
+```javascript
+let arr = [1, 2, 3, 4, 5];
+for (let i = 0, l = arr.length; i < l; i++) {
+	console.log( arr[i] );
+}
+```
+
 #### Mutator methods
 
 ##### copyWithin()
