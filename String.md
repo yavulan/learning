@@ -15,7 +15,7 @@
 \u{X} === 'unicode codepoint';
 \xXX === 'Latin-1 character'
 ```
-#### String Creating
+#### Creation
 1. String primitives
   ```javascript
   typeof 'text'; // "string"

@@ -29,7 +29,7 @@ Source: [developer.mozilla.org↗](https://developer.mozilla.org/en-US/docs/Web/
   * Date
 * [Text processing]()
   * [String](String.md)
-  * RegExp
+  * [RegExp](RegExp.md)
 * [Indexed collections](#Indexed_collections)
   * [Array](#array)
   * [Typed Arrays↗](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays)
