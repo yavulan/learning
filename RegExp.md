@@ -33,6 +33,7 @@ let re2 = new RegExp( 'a', 'g' );
 | [\b]      | backspace                                                                                                     |
 | \cX       | control character in a string, where X is a letter from A-Z. For example, /\cM/ matches control-M in a string |
 | \         | toggle next character treating between special/literal                                                        |
+| [^]       | any character that is not in the empty set of characters (including newlines)                                 |
 
 #### Characters sets
 ```javascript
@@ -55,3 +56,42 @@ let re2 = new RegExp( 'a', 'g' );
 | \b        | word boundary: position where a word character is not followed or preceeded by another word-character, such as between a letter and a space. Matched word boundary is not included in the match. |
 | \B        | non-word boundary: position where the previous and next character are of the same type: Either both must be words, or both must be non-words. Such as between two letters or between two spaces. |
 
+### Properties
+
+#### RegExp.length
+```javascript
+RegExp.length; // 2
+```
+
+#### RegExp[@@species]
+Returns the RegExp constructor.
+```javascript
+// RegExp[Symbol.species]
+RegExp[Symbol.species]; // function RegExp() { [native code] }
+```
+
+#### lastIndex
+Read/write integer property of RegExp instances for the index at which to start the next match. Sets and updates automatically if the RegExp instance use the 'g' flag.
+```javascript
+// regExpObj.lastIndex
+let re = /a/g;
+re.exec( 'aba' ); // ["a"]
+re.lastIndex; // 1
+
+re.exec( 'aba' ); // ["a"]
+re.lastIndex; // 3
+
+re.exec( 'aba' ); // null
+re.lastIndex; // 0
+```
+
+##### Loop over matches
+Works because of automatic updates of lastIndex property.
+```javascript
+let str = 'a1b2c33';
+let re = /\d+/g;
+let match;
+while ( match = re.exec(str) ) {
+	console.log( match[0], "at", match.index ); //  1 at 1; 2 at 3; 33 at 5
+}
+```
