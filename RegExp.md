@@ -95,3 +95,59 @@ while ( match = re.exec(str) ) {
 	console.log( match[0], "at", match.index ); //  1 at 1; 2 at 3; 33 at 5
 }
 ```
+
+### Prototype properties
+
+#### flags
+Returns a string consisting of the flags of the current RegExp.
+```javascript
+/ /ig.flags;   // "gi"
+/ /myu.flags;  // "muy"
+```
+
+#### global
+Indicates whether or not the "g" flag is used with the RegExp.
+```javascript
+/foo/g.global; // true
+/bar/.global; // false
+```
+
+#### ignoreCase
+Indicates whether or not the "i" flag is used with the RegExp.
+```javascript
+/foo/i.ignoreCase; // true
+/bar/.ignoreCase; // false
+```
+
+#### multiline
+Indicates whether or not the "i" flag is used with the RegExp.
+```javascript
+/foo/m.multiline; // true
+/bar/.multiline; // false
+```
+
+#### source
+Returns a String containing the source text of the regexp, and it doesn't contain the two forward slashes on both sides and any flags.
+```javascript
+/foo/gmu.source; // "foo"
+
+// starting from ECMAScript 5
+new RegExp().source; // "(?:)"
+
+new RegExp( '\n' ).source === "\n";  // prior to ES5
+new RegExp( '\n' ).source === "\\n"; // starting with ES5
+```
+
+#### sticky
+Indicates whether or not the "y" flag is used with the RegExp.
+```javascript
+/foo/y.sticky; // true
+/bar/.sticky; // false
+```
+
+#### unicode
+Indicates whether or not the "u" flag is used with the RegExp.
+```javascript
+/\u{61}/u.unicode; // true
+/bar/.unicode; // false
+```
