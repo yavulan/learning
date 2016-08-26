@@ -51,7 +51,7 @@ Source: [developer.mozilla.org↗](https://developer.mozilla.org/en-US/docs/Web/
   * Reflect
   * Proxy
 * [Internationalization↗](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl)
-* [Arguments]()
+* [Arguments](arguments.md)
 
 
 ## Indexed collections<a name="Indexed_collections"></a>
