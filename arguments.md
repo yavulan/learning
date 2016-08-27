@@ -8,7 +8,7 @@ Array.prototype.slice.call( arguments );
 Array.from( arguments );
 ```
 
-Using slice on arguments prevents optimizations in [some JavaScript engines (V8)?](https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments). If you care for them, try constructing a new array using the despised Array constructor as a function:
+Using slice on arguments prevents optimizations in [some JavaScript engines (V8)↗](https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments). If you care for them, try constructing a new array using the despised Array constructor as a function:
 ```javascript
 let args = ( arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments) );
 ```
