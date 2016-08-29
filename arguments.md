@@ -1,7 +1,7 @@
-### Arguments
+# Arguments
 An Array-like object corresponding to the arguments passed to a function.
 
-#### Converting arguments to array
+## Converting arguments to array
 ```javascript
 Array.prototype.slice.call( arguments );
 [...arguments];
@@ -13,16 +13,16 @@ Using slice on arguments prevents optimizations in [some JavaScript engines (V8)
 let args = ( arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments) );
 ```
 
-#### Properties
-##### length
+## Properties
+### length
 Contains the number of arguments passed to the function.
 
-##### callee
+### callee
 Contains the currently executing function.
 
 ECMAScript 5 (ES5) forbids use of arguments.callee() in strict mode. Avoid using arguments.callee() by either giving function expressions a name or use a function declaration where a function must call itself.
 
-##### arguments[@@iterator]
+### arguments[@@iterator]
 The initial value of the @@iterator property is the same function object as the initial value of the Array.prototype.values property.
 
 ```javascript
