@@ -15,6 +15,7 @@ if(variable) variable = variable;
 else variable = 'default';
 // becomes
 arr[2] = arr[2] || '';
+arr[2] || (arr[2] = '');
 
 /*
  * Even or odd

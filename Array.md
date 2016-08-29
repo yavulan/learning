@@ -163,6 +163,8 @@ array.concat() // using array copy to save proper indexes of parent array
         	   ( aConition < bCondition ) ? -1 : 1;
      });
 
+// arr.concat().sort( (a, b) => a === b ? arr.indexOf(a) - arr.indexOf(b) : ( a < b ) ? -1 : 1 )
+
 // Reverse array by sorting
 arr = arr.concat().sort( (a, b) => ( arr.indexOf(a) < arr.indexOf(b) ) ? 1 : -1 );
 
