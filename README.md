@@ -53,3 +53,4 @@ Source: [developer.mozilla.org↗](https://developer.mozilla.org/en-US/docs/Web/
 * [Internationalization↗](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl)
 * [Arguments](arguments.md)
 
+# [ES6](ES6.md)
