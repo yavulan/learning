@@ -1,14 +1,15 @@
 # ES6
 
 ## Arrow function =>
-In ES5:
+### In ES5:
 ```javascript
 var foo = function( a, b ) {
     return a + b;
 };
 ```
 
-In ES6:
+### In ES6:
+Arrow function automatically binding this (lexical context binding), so be careful.
 ```javascript
 // ( parameters ) => { statement/expression }
 const foo = ( a, b ) => a + b;
@@ -30,6 +31,11 @@ qux( 1 ); // 2
 
 // Parameter to function call
 'AAABBB'.replace( /A/g, c => c.toLowerCase() ); // "aaaBBB"
+
+// Non-wanted this binding
+$( '.selector' ).with().jQuery( () => {
+	$( this ) // lexical scoping rewrote jQuery this!
+});
 ```
 
 ## Spread operator ...
@@ -61,20 +67,53 @@ Expand elements of an array (or arguments of a function).
  ```
 
 ## Destructing
+It's a nice practice to have starting and ending spaces indicating that it's destructing and not an array [?](https://www.youtube.com/user/learncodeacademy/).
 ```javascript
-let [a, b] = [1, 2]; // a = 1; b = 2
+let [ a, b ] = [1, 2]; // a = 1; b = 2
 let c = [1, 2, 3, 4, 5];
-var [d, e] = c; // d = 1; e = 2
+var [ d, e ] = c; // d = 1; e = 2
 
 // Default values
 let f, g;
-[f=2, g=3] = [0]; // f = 0; g = 3
+[ f=2, g=3 ] = [0]; // f = 0; g = 3
 
 // Elision lets you use the syntax of Array “holes” to skip elements during destructing:
-let [,, x, y] = ['a', 'b', 'c', 'd']; // x = 'c'; y = 'd'
+let [ ,, x, y ] = ['a', 'b', 'c', 'd']; // x = 'c'; y = 'd'
 
 // Exchange two values in one row
-[a, b] = [b, a];
+[ a, b ] = [ b, a ];
+
+// Function calling
+const foo = ([ a, b ]) => a + b;
+foo( [1, 2] ); // 3
+
+// Object destructing
+let obj = {
+    prop1: 'val1',
+    prop2: 'val2',
+    prop3: 'val3'
+};
+let { prop1, prop3 } = obj; // prop1 === "val1"; prop3 === "val3";
+
+// Include variables in object
+let name = 'Taras Shevchenko';
+let obj2 = {
+    name,
+    ethnicity: 'Ukrainian'
+}; // Object {name: "Taras Shevchenko", ethnicity: "Ukrainian"}
+
+// Passing an object to a function
+const fullName = ( obj ) => `${obj.firstName} ${obj.lastName}`;
+let firstName = 'Taras';
+let lastName = 'Shevchenko';
+fullName( { firstName, lastName } ); // "Taras Shevchenko"
+
+// More complicated way to pass an object to a function
+const repeatStr = ({ chars, n: times, max = 3 }) => {
+     if( times > max ) times = max;
+     return [...Array( times + 1 )].join( chars );
+};
+repeatStr({chars: 'a', n: 6}); // "aaa"
 ```
 
 ## Rest operator ...
@@ -87,3 +126,5 @@ let [a, ...b] = [1, 2, 3]; // a = 1; b = [2, 3]
 const rest = ( one, ...two ) => two.map( val => val * one );
 rest( 2, 1, 2, 3, 4 ); // [2, 4, 6, 8]
 ```
+
+## [Template strings](String.md#stringraw)
