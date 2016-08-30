@@ -9,7 +9,7 @@ var foo = function( a, b ) {
 ```
 
 ### In ES6:
-Arrow function automatically binding this (lexical context binding), so be careful.
+Arrow function automatically binding *this* (lexical context binding), so be careful.
 ```javascript
 // ( parameters ) => { statement/expression }
 const foo = ( a, b ) => a + b;
@@ -32,9 +32,9 @@ qux( 1 ); // 2
 // Parameter to function call
 'AAABBB'.replace( /A/g, c => c.toLowerCase() ); // "aaaBBB"
 
-// Non-wanted this binding
+// Unwanted *this* binding
 $( '.selector' ).with().jQuery( () => {
-	$( this ) // lexical scoping rewrote jQuery this!
+	$( this ) // lexical scoping rewrote jQuery *this*
 });
 ```
 
@@ -67,7 +67,7 @@ Expand elements of an array (or arguments of a function).
  ```
 
 ## Destructing
-It's a nice practice to have starting and ending spaces indicating that it's destructing and not an array [?](https://www.youtube.com/user/learncodeacademy/).
+You might want to separate brackets and side variables by a single space to indicate that it's destructing rather than array declaring (e.g. [ a, b ]) [?](https://www.youtube.com/user/learncodeacademy/).
 ```javascript
 let [ a, b ] = [1, 2]; // a = 1; b = 2
 let c = [1, 2, 3, 4, 5];
@@ -113,7 +113,7 @@ const repeatStr = ({ chars, n: times, max = 3 }) => {
      if( times > max ) times = max;
      return [...Array( times + 1 )].join( chars );
 };
-repeatStr({chars: 'a', n: 6}); // "aaa"
+repeatStr( {chars: 'a', n: 6} ); // "aaa"
 ```
 
 ## Rest operator ...
