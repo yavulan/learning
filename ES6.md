@@ -127,4 +127,56 @@ const rest = ( one, ...two ) => two.map( val => val * one );
 rest( 2, 1, 2, 3, 4 ); // [2, 4, 6, 8]
 ```
 
+## Classes
+Class declarations are not hoisted.
+```javascript
+class Parent {
+  constructor( param ) {
+    this._param = param;
+  }
+
+  get param() {
+    return this._param;
+  }
+
+  set param( val ) {
+    this._param = val;
+  }
+
+  static toString( param ) {
+    return new Parent( param ).param + '';
+  }
+}
+
+class Child extends Parent {
+    constructor( param ){
+        super( param );
+    }
+}
+```
+
+## Modules
+### Export
+```javascript
+export default {
+	// some object in here
+}
+
+// functions exporting
+export default function(){}
+export function foo(){}
+
+// variable declaring in exproting is allowed
+export let foo = 1, bar = 2;
+```
+
+### Import
+```javascript
+import someModule from 'someModule';
+import { foo, bar as barry } from 'someModule';
+
+// lodash example
+import { chunk, forEach } from 'lodash';
+```
+
 ## [Template strings](String.md#stringraw)
