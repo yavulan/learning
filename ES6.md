@@ -1,5 +1,42 @@
 # ES6
 
+## Declarations
+| Declaration | Description                                                                                                                  | Hoisting                                                                                           |
+|-------------|------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| var         | declares a variable to execution context (enclosing function or globally)                                                    | hoisted, initialised with undefined untill delcaration is processed                                |
+| let         | declares a block scope local variable                                                                                        | hoisted, uninitialised until the declaration is processed (variable is in a "temporal dead zone" ) |
+| const       | creates a block scope read-only reference to a value (not immutable, just that the variable identifier cannot be reassigned) | same as let                                                                                        |
+
+**hoisting: declaring a variable anywhere in the code is equivalent to declaring it at the top.*
+
+### Cleaner code in inner functions with ```let```:
+```javascript
+let arr = [];
+for( let i = 0; i < 2; i++ ) {
+  arr.push( _ => console.log(i) )
+}
+
+arr[0](); // 0
+arr[1](); // 1
+```
+
+### Errors with ```let``` and ```const```:
+
+1. Redeclaring the same variable within the same function or block scope raises a SyntaxError:
+
+  ```javascript
+  let a;
+  let a; // Uncaught TypeError: Identifier 'a' has already been declared
+  ```
+2. Temporal dead zone:
+
+  ```javascript
+  const foo = _ => {
+    bar; // Uncaught ReferenceError: bar is not defined
+    let bar;
+  }
+  ```
+
 ## Arrow function =>
 ### In ES5:
 ```javascript
