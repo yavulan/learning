@@ -3,8 +3,8 @@
 ## Declarations
 | Declaration | Description                                                                                                                  | Hoisting                                                                                           |
 |-------------|------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| var         | declares a variable to execution context (enclosing function or globally)                                                    | hoisted, initialised with undefined untill delcaration is processed                                |
-| let         | declares a block scope local variable                                                                                        | hoisted, uninitialised until the declaration is processed (variable is in a "temporal dead zone" ) |
+| var         | declares a variable to execution context (to enclosing function or globally)                                                 | hoisted, initialised with undefined untill delcaration is processed                                |
+| let         | declares a block scope local variable                                                                                        | hoisted, uninitialised until the declaration is processed (variable is in a "temporal dead zone")  |
 | const       | creates a block scope read-only reference to a value (not immutable, just that the variable identifier cannot be reassigned) | same as let                                                                                        |
 
 **hoisting: declaring a variable anywhere in the code is equivalent to declaring it at the top.*
@@ -12,6 +12,7 @@
 ### Cleaner code in inner functions with ```let```:
 ```javascript
 let arr = [];
+
 for( let i = 0; i < 2; i++ ) {
   arr.push( _ => console.log(i) )
 }
