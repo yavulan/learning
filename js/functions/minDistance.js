@@ -1,6 +1,6 @@
 /**
  * given two arrays of locations in Cartesian coordinate system
- * find length of a shortest path using lines at Strings as roads :)
+ * finds the length of a shortest path using lines at Strings as roads :)
  * @param dep {Array} // [0.9, 1]
  * @param dest {Array} // [2, 2.2]
  * @returns {Number} // 2.3
