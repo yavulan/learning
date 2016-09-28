@@ -126,7 +126,7 @@ Returns a non-negative integer that is the Unicode code point value (or undefine
 
 ### concat()
 Combines the text of one or more strings and returns a new string.
-Using assignment operators (+, +=) is preferred due to [performance reasons?](https://jsperf.com/concat-vs-plus-vs-join).
+Using assignment operators (+, +=) is preferred due to [performance reasons↗](https://jsperf.com/concat-vs-plus-vs-join).
 ```javascript
 // str.concat( string2[, string3, ..., stringN] )
 'He'.concat( 'l', 'lo' ); // "Hello"
@@ -163,7 +163,7 @@ Returns the index of the last occurrence of the specified value, searching backw
 
 ### localeCompare()
 Returns a number indicating whether a reference string comes before or after or is the same as the given string in sort order.
-More about locales and options [here?](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare).
+More about locales and options [here↗](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare).
 ```javascript
 // referenceStr.localeCompare( compareString[, locales[, options]] )
 'check'.localeCompare('against'); // 1
@@ -182,7 +182,7 @@ found.input; // "As though with God...."
 ```
 
 ### normalize()
-Returns the Unicode Normalization Form of a given string (if the value isn't a string, it will be converted to one first). Available [${forms}?](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize).
+Returns the Unicode Normalization Form of a given string (if the value isn't a string, it will be converted to one first). Available [${forms}↗](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize).
 ```javascript
 // str.normalize( form )
 let str = '\u1E9B\u0323';

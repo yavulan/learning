@@ -115,7 +115,7 @@ var [ d, e ] = c; // d = 1; e = 2
 let f, g;
 [ f=2, g=3 ] = [0]; // f = 0; g = 3
 
-// Elision lets you use the syntax of Array ìholesî to skip elements during destructing:
+// Elision lets you use the syntax of Array ‚Äúholes‚Äù to skip elements during destructing:
 let [ ,, x, y ] = ['a', 'b', 'c', 'd']; // x = 'c'; y = 'd'
 
 // Exchange two values in one row

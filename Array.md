@@ -169,7 +169,7 @@ array.concat() // using array copy to save proper indexes of parent array
 arr = arr.concat().sort( (a, b) => ( arr.indexOf(a) < arr.indexOf(b) ) ? 1 : -1 );
 
 // Sort by characters(allowed non-ASCII), ignore case
-[...'Êàëèíà'].sort( (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()) ); // ["à", "à", "è", "Ê", "ë", "í"]
+[...'ÐšÐ°Ð»Ð¸Ð½Ð°'].sort( (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()) ); // ["Ð°", "Ð°", "Ð¸", "Ðš", "Ð»", "Ð½"]
 ```
 
 ### splice()
