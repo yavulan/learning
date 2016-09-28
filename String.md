@@ -43,7 +43,7 @@
   ```
 
 ## Immutability
-Strings are immutable, so they do not have mutator methods and cannot be changed.
+Strings are immutable (as well as other primitive types), so they do not have mutator methods and cannot be changed.
 ```javascript
 let str = 'ab';
 
@@ -159,6 +159,37 @@ Returns the index of the last occurrence of the specified value, searching backw
 ```javascript
 // str.lastIndexOf( searchValue[, fromIndex = +Infinity] )
 'Or what was it affected me?'.lastIndexOf( 'e' ); // 25
+```
+
+### localeCompare()
+Returns a number indicating whether a reference string comes before or after or is the same as the given string in sort order.
+More about locales and options [here?](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare).
+```javascript
+// referenceStr.localeCompare( compareString[, locales[, options]] )
+'check'.localeCompare('against'); // 1
+'a'.localeCompare('d'); // -1
+```
+
+### match()
+Returns the matches (array or null) when matching a string against a regular expression. The returned Array has an extra input property, which contains the original string that was parsed. In addition, it has an index property, which represents the zero-based index of the match in the string.
+```javascript
+// str.match( RegExp )
+'I felt with joy all overcome,'.match( /\b\w{4}\b/g ); // ["felt", "with"]
+
+let found = 'As though with God....'.match( /o/ ); // ["o"]
+found.index; // 5
+found.input; // "As though with God...."
+```
+
+### normalize()
+Returns the Unicode Normalization Form of a given string (if the value isn't a string, it will be converted to one first). Available [${forms}?](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize).
+```javascript
+// str.normalize( form )
+let str = '\u1E9B\u0323';
+str.normalize() === str.normalize('NFC'); // '\u1E9B\u0323'
+str.normalize('NFD'); // '\u017F\u0323\u0307'
+str.normalize('NFKC'); // '\u1E69'
+str.normalize('NFKD'); // '\u0073\u0323\u0307'
 ```
 
 ### Notes:
