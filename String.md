@@ -192,6 +192,30 @@ str.normalize('NFKC'); // '\u1E69'
 str.normalize('NFKD'); // '\u0073\u0323\u0307'
 ```
 
+### padEnd()
+Pads the current string from the end with a given string (repeated) so that the resulting string reaches a ${targetLength}.
+```javascript
+// str.padEnd( targetLength [, padString] )
+'1'.padEnd( 2, '0' ); // "10"
+'foo'.padEnd( 10, 'bar' ); // "foobarbarb"
+```
+
+### padStart()
+Pads the current string from the start with a given string (repeated) so that the resulting string reaches a ${targetLength}.
+```javascript
+// str.padStart( targetLength [, padString] )
+'9'.padStart( 3, '0' ); // "009"
+'10'.padStart( 2, '0' ); // "10"
+```
+
+### repeat()
+Returns a new string which contains the specified number of copies of the string on which it was called, concatenated together.
+```javascript
+// str.repeat( count )
+'abc'.repeat( 3 ); // "abcabcabc"
+'abc'.repeat( 0 ); // ""
+```
+
 ### Notes:
 ```javascript
 eval( new String('2+2') ); // "2+2"
