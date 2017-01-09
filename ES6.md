@@ -47,7 +47,7 @@ var foo = function( a, b ) {
 ```
 
 ### In ES6:
-Arrow function automatically binding *this* (lexical context binding), so be careful.
+Arrow function automatically binds *this* (lexical context binding), so be careful.
 ```javascript
 // ( parameters ) => { statement/expression }
 const foo = ( a, b ) => a + b;
@@ -70,7 +70,7 @@ qux( 1 ); // 2
 // Parameter to function call
 'AAABBB'.replace( /A/g, c => c.toLowerCase() ); // "aaaBBB"
 
-// Unwanted *this* binding
+// Unwanted *this* binding example
 $( '.selector' ).with().jQuery( () => {
 	$( this ) // lexical scoping rewrote jQuery *this*
 });
@@ -79,7 +79,7 @@ $( '.selector' ).with().jQuery( () => {
 ## Spread operator ...
 Expand elements of an array (or arguments of a function).
 
-1. Calling a function
+1. Calling a function:
 
   ```javascript
   const addFourNumbers = ( a, b, c, d ) => a + b + c + d;
@@ -94,7 +94,7 @@ Expand elements of an array (or arguments of a function).
   addFourNumbers.apply( null, numbers ); // 10
   addFourNumbers.apply( null, [].concat(1, twoNumbers, 3) ); // 9
   ```
-2. Creating an array
+2. Creating an array:
 
  ```javascript
  let a = [2, 3];
@@ -105,7 +105,7 @@ Expand elements of an array (or arguments of a function).
  ```
 
 ## Destructing
-You might want to separate brackets and side variables by a single space to indicate that it's destructing rather than array declaring (e.g. [ a, b ]) [?](https://www.youtube.com/user/learncodeacademy/).
+You might want to separate brackets and side variables by a single space to indicate that it's destructing rather than array declaring (e.g. [ a, b ]) [↗](https://www.youtube.com/user/learncodeacademy/).
 ```javascript
 let [ a, b ] = [1, 2]; // a = 1; b = 2
 let c = [1, 2, 3, 4, 5];
