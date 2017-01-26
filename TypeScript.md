@@ -62,12 +62,12 @@ express("Hello"); // "Hello!"
 let arr: number[] = [1, 2];
 let arr: Array<number> = [1, 2];
 ```
-    - tuple types:
-    ```TypeScript
-    let a: [string, number];
-    x = ["a", 1]; // OK
-    x = [1, "a"]; // Error
-    ```
+tuple types:
+```TypeScript
+let a: [string, number];
+x = ["a", 1]; // OK
+x = [1, "a"]; // Error
+```
 - enum
 ```TypeScript
 enum Color {Blue, Yellow, White};
@@ -92,7 +92,7 @@ function foo(): void {} // function that does not return a value
 ### Advanced Types
 
 #### Union Types (one or another)
-```
+```TypeScript
 function foo(bar: (string | any[])) {
   // Type Guards
   bar.push(1) // Error: Property 'push' does not exist on type 'string | any[]'.
@@ -108,7 +108,7 @@ function foo(bar: (string | any[])) {
 ### Types assertion
 Is used purely by the compiler and is a way to tell the compiler “trust me, I know what I’m doing.”
 (like a type cast, but without special checking or restructuring of data).
-```
+```TypeScript
 let val: any = "text";
 // “angle-bracket” syntax
 let valLength: number = (<string>val).length;
@@ -119,7 +119,7 @@ let valLength: number = (val as string).length;
 
 ### Overload functions
 A function that accepts 2 strings or 2 arrays only.
-```
+```TypeScript
 function overloaded(x: any[], y: any[]);
 function overloaded(x: string, y: string);
 function overloaded(x: (string|any[]), y: (string|any[])) {
