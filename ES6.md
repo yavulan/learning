@@ -218,3 +218,11 @@ import { chunk, forEach } from 'lodash';
 ```
 
 ## [Template strings](String.md#stringraw)
+
+## For..of
+Loop over the elements of any collection that has a [Symbol.iterator] property.
+```javascript
+for (let variable of iterable) {
+  statement;
+}
+```
