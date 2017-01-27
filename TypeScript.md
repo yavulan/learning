@@ -74,6 +74,9 @@ enum Color {Blue, Yellow, White};
 let x: Color = Color.Yellow;
 // get color name
 let colorName: string = Color[1];
+// using <enum> for States checking
+enum State {New = 1, Complete, Deleted} // start numeration from 1 instead of 0
+if(some.state === State.New) {}
 ```
 - any
 ```TypeScript
