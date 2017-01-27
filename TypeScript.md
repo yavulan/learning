@@ -121,7 +121,7 @@ let valLength: number = (val as string).length;
 ```
 
 ### Anonymous typing
-```
+```TypeScript
 let variable: {name: string};
 
 function len(x: {length: number}) {
@@ -141,7 +141,7 @@ let fruit1 = <Fruit>{name: "apple"};
 let fruit2: Fruit = {name: "strawberry"};
 ```
 
-#### Interfaces for method declarations.
+#### Interfaces for method declarations
 ```TypeScript
 interface IFruitService {
     add(fruit: Fruit): Fruit;
@@ -149,7 +149,7 @@ interface IFruitService {
 }
 ```
 
-#### Function Types.
+#### Function Types
 ```TypeScript
 interface jQuery {
     (selector: string): HTMLElement;
@@ -163,7 +163,7 @@ let $2 : jQuery;
 $2 = function (selector) {};
 ```
 
-##### Readonly and const
+#### Readonly and const
 Variables use const whereas properties use readonly.
 ```TypeScript
 interface Point {
@@ -171,6 +171,7 @@ interface Point {
     readonly y: number;
 }
 
+// Read-only arrays
 let arr: ReadonlyArray<number> = [1, 2, 3, 4];
 arr.push(5); // error
 ```
