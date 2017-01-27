@@ -120,6 +120,62 @@ let valLength: number = (<string>val).length;
 let valLength: number = (val as string).length;
 ```
 
+### Anonymous typing
+```
+let variable: {name: string};
+
+function len(x: {length: number}) {
+    return x.length;
+} // function accepts only variables with numeric "length" property
+```
+
+### Interfaces
+They are compile-time features.
+```TypeScript
+interface Fruit {
+    name: string;
+    fresh?: boolean; // optional parameter
+}
+// using as a Type
+let fruit1 = <Fruit>{name: "apple"};
+let fruit2: Fruit = {name: "strawberry"};
+```
+
+#### Interfaces for method declarations.
+```TypeScript
+interface IFruitService {
+    add(fruit: Fruit): Fruit;
+    [propName: string]: any; // any number of additional properties
+}
+```
+
+#### Function Types.
+```TypeScript
+interface jQuery {
+    (selector: string): HTMLElement;
+    version: number;
+}
+
+let $1 = <jQuery>function (selector) {};
+$.version = 2.1;
+
+let $2 : jQuery;
+$2 = function (selector) {};
+```
+
+##### Readonly and const
+Variables use const whereas properties use readonly.
+```TypeScript
+interface Point {
+    readonly x: number;
+    readonly y: number;
+}
+
+let arr: ReadonlyArray<number> = [1, 2, 3, 4];
+arr.push(5); // error
+```
+<!--TODO: finish Interfaces learning https://www.typescriptlang.org/docs/handbook/interfaces.html -->
+
 ### Overload functions
 A function that accepts 2 strings or 2 arrays only.
 ```TypeScript
