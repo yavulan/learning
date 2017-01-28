@@ -191,7 +191,7 @@ Notice: The last signature **must** be a super set of all previous signatures.
 ### Classes
 A brief prototype intro on example of method searching:
 ```JavaScript
-!current.method ? !current.prototype.method ? !current.prototype.prototype.method ? ... ? !Object.prototype.method : TypeError;
+current.method || current.prototype.method || current.prototype.prototype.method || ... || Object.prototype.method || TypeError;
 ```
 
 #### Static members
