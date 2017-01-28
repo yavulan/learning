@@ -66,7 +66,7 @@ tuple types:
 ```TypeScript
 let a: [string, number];
 x = ["a", 1]; // OK
-x = [1, "a"]; // Error
+x = [1, "a"]; // error
 ```
 - enum
 ```TypeScript
@@ -289,4 +289,54 @@ interface ISomeGenerator {
 class ClassService implements IClassService, ISomeGenerator {
     // all methods implementation
 }
+```
+
+### Generic Types
+Let's try to be oblivious: “generic” means general.
+
+The main goal of Generic Types usage is to **provide type-safety** and to resolve type-casting problems.
+
+#### Naming conventions
+|Template|Examples|Explanation|
+|---|---|---|
+|char >= T|T, U, V| Uppercase characters starting from T (type).|
+|T${Name}|TKey, TValue| T-prefixed sensible names.|
+
+#### Usage with Functions
+```TypeScript
+function Max<T>(a: T, b: T): T {
+    return a > b ? a : b;
+}
+
+Max(1, 2);
+Max("string", "");
+Max("string", 42); // error
+```
+
+#### Usage with Classes
+```TypeScript
+class Dictionary<TKey, TValue> {
+    add(key: TKey, value: TValue) {}
+}
+interface Item { number: number; }
+
+let myDict = new Dictionary<string, Item>();
+
+myDict.add("apple", {number: 10});
+myDict.add("banana", 10); // error
+```
+
+#### Generic Constraints (limitations)
+Supplied by ```extends``` keyword usage (```where``` keyword in C#).
+```TypeScript
+function LongerOne<T extends {length: number}>(a: T, b: T): T {
+    return a.length > b.length ? a : b;
+}
+
+LongerOne([], []);
+LongerOne([], ""); // error
+
+// accepting extends classes
+class CustomArray<T> extends Array<T> {}
+LongerOne([], new CustomArray());
 ```
