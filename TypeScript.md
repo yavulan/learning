@@ -187,3 +187,106 @@ function overloaded(x: (string|any[]), y: (string|any[])) {
 }
 ```
 Notice: The last signature **must** be a super set of all previous signatures.
+
+### Classes
+A brief prototype intro on example of method searching:
+```JavaScript
+!current.method ? !current.prototype.method ? !current.prototype.prototype.method ? ... ? !Object.prototype.method : TypeError;
+```
+
+#### Static members
+Static assumes one variable for the entire application. One way of implementing is:
+```JavaScript
+var global = "" // at the global scope
+```
+But assigning variables directly to global scope is considered as a bad practice.
+So, to avoid global scope we can do:
+```TypeScript
+class ClassName {
+    static id: number = 0;
+    static getNextId() {
+        return ClassName.id += 1;
+    }
+}
+```
+
+#### Getters & Setters
+```TypeScript
+class ClassName {
+    _state: number = 0;
+    get state() {
+        return this._state;
+    }
+    set state(state) {
+        this._state = state;
+    }
+}
+```
+
+#### Inheriting behavior from a Base Class
+```TypeScript
+class ClassName {
+    constructor(private name: string) {}
+    methodName() {}
+}
+
+class ClassChild extends ClassName {
+    constructor(name: string) {
+        super(name); // every time we create a constructor on a child class, it MUST have a call to the parent constructor
+    }
+
+    // extending base class method functionality
+    methodName() {
+        super.methodName();
+        // other staff
+    }
+}
+```
+
+#### Abstract Classes & Methods
+```TypeScript
+abstract class AbsClass {
+    abstract methodName(input: string): boolean; // MUST be implemented in every child class
+}
+
+new AbsClass(); // Error: Cannot create an instance of the abstract class 'AbsClass'.
+class AbsChild extends AbsClass {
+    // Error: Non-abstract class 'AbsChild' does not implement inherited abstract member 'methodName' from class 'AbsClass'.
+}
+```
+
+#### Access modifiers
+||Class|Subclass|Other Classes|
+|---|---|---|---|
+|**public**|✓|✓|✓|
+|**protected**|✓|✓|×|
+|**private**|✓|×|×|
+
+Public is a default JavaScript modifier. Access modifiers may be applied to many things:
+```TypeScript
+class ClassName {
+    private static id: number = 0;
+    constructor(private: variable: any) {}
+
+    // getter & setter allow modifying in case they both have the same accessability
+    private get nextId() {}
+    private set nextId() {}
+}
+```
+
+#### Implementing interfaces
+```TypeScript
+interface IClassService {
+    add(name: string): string;
+    getAll(): string[];
+    delete(id: number): void;
+}
+
+interface ISomeGenerator {
+    variable: number;
+}
+
+class ClassService implements IClassService, ISomeGenerator {
+    // all methods implementation
+}
+```
