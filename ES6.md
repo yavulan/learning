@@ -3,7 +3,7 @@
 ## Declarations
 | Declaration | Description                                                                                                                  | Hoisting                                                                                           |
 |-------------|------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| var         | declares a variable to execution context (to enclosing function or globally)                                                 | hoisted, initialised with undefined untill delcaration is processed                                |
+| var         | declares a variable to execution context (to enclosing function or globally)                                                 | hoisted, initialised with undefined until declaration is processed                                |
 | let         | declares a block scope local variable                                                                                        | hoisted, uninitialised until the declaration is processed (variable is in a "temporal dead zone")  |
 | const       | creates a block scope read-only reference to a value (not immutable, just that the variable identifier cannot be reassigned) | same as let                                                                                        |
 
