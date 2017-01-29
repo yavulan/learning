@@ -226,3 +226,82 @@ for (let variable of iterable) {
   statement;
 }
 ```
+
+## [Promises↗](http://exploringjs.com/es6/ch_promises.html#ch_promises)
+Used for asynchronous work, represents a value which may be available now, or in the future, or never.
+```JavaScript
+new Promise( (resolve, reject) => {} );
+```
+Passed function named **an executor**. It is called with the arguments ```${resolve}``` and ```${reject}```, which are functions that Promise expect us to call.
+
+Note: executor is called before the Promise constructor even returns the created object.
+
+```JavaScript
+function Example() {
+    return new Promise((resolve, reject) => {
+        if (success) {
+            resolve(success.value);
+        } else {
+            reject(new Error("Error msg"));
+        }
+        // do other stuff
+    });
+}
+
+Example().then(returned => {
+    console.log(returned);
+    // doing stuff with returned value
+});
+```
+
+### Advantages
+It is possible to write a code around a variable even if you don't have a value just yet.
+
+#### Promises compared to callback functions
+- No inversion of control
+- Cleaner code
+- Error handling is easier
+- Simple chaining
+- Standardized
+
+### Performance
+In case of chaining function calls via then(), they are executed sequentially, one at a time:
+```JavaScript
+func1()
+.then(() => func2());
+```
+In case of calling all of them immediately, they are executed in parallel:
+```JavaScript
+func1();
+func2();
+```
+
+### Methods
+Promise prototype has methods .then(onFulfilled, onRejected) & .catch(onRejected).
+
+#### Promise.all
+Handling more than one Promises at one time:
+```JavaScript
+Promise.all([
+    Example("value1"),
+    Example("value2"),
+    Example("value3"),
+]).then((res) => {
+    // returns an array of results
+}).catch((error) => {
+    // error handling
+});
+```
+
+### Other techniques
+#### Sleep
+```JavaScript
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function foo() {
+    await sleep(200);
+    // other stuff
+}
+```
