@@ -2,6 +2,41 @@
 
 In general, `TypeScript === JavaScript (edge) + Static Typing`.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Installation](#installation)
+- [Compiling](#compiling)
+- [Introduction](#introduction)
+  - [Specifying Types](#specifying-types)
+  - [Error example](#error-example)
+- [Basic Types](#basic-types)
+- [Advanced Types](#advanced-types)
+  - [Union Types](#union-types)
+  - [Types assertion](#types-assertion)
+  - [Anonymous typing](#anonymous-typing)
+- [Interfaces](#interfaces)
+  - [Interfaces for method declarations](#interfaces-for-method-declarations)
+  - [Function Types](#function-types)
+  - [Readonly and const](#readonly-and-const)
+- [Overload functions](#overload-functions)
+- [Classes](#classes)
+  - [Static members](#static-members)
+  - [Getters & Setters](#getters--setters)
+  - [Class extending](#class-extending)
+  - [Abstract Classes & Methods](#abstract-classes--methods)
+  - [Access modifiers](#access-modifiers)
+  - [Implementing interfaces](#implementing-interfaces)
+- [Generic Types](#generic-types)
+  - [Naming conventions](#naming-conventions)
+  - [Usage with Functions](#usage-with-functions)
+  - [Usage with Classes](#usage-with-classes)
+  - [Generic Constraints (limitations)](#generic-constraints-limitations)
+  - [Modules](#modules)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Installation
 ```Shell
 npm install -g typescript
