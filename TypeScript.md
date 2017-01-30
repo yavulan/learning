@@ -1,8 +1,8 @@
-## TypeScript
+# TypeScript
 
-In general, ```TypeScript === JavaScript + Static Typing```.
+In general, `TypeScript === JavaScript (edge) + Static Typing`.
 
-### Install
+## Installation
 ```Shell
 npm install -g typescript
 
@@ -13,7 +13,8 @@ npm install -g tslint
 tslint --init
 ```
 
-Now compiling *.ts files as simple as:
+## Compiling
+Compiling `*.ts` files as simple as:
 ```Shell
 tsc <filename>
 
@@ -24,14 +25,9 @@ tsc -w app.ts
 tsc -w
 ```
 
-Try to configure your IDE for automated compiling.
+It is a nice idea to configure your IDE for automated compiling.
 
-It may be useful to have a server for testing purposes:
-```Shell
-npm install -g light-server
-```
-
----
+## Introduction
 
 ### Specifying Types
 ```TypeScript
@@ -53,7 +49,7 @@ express(42); // Argument of type '42' is not assignable to parameter of type 'st
 express("Hello"); // "Hello!"
 ```
 
-### Basic Types
+## Basic Types
 - boolean
 - number
 - string
@@ -74,9 +70,9 @@ enum Color {Blue, Yellow, White};
 let x: Color = Color.Yellow;
 // get color name
 let colorName: string = Color[1];
-// using <enum> for States checking
+// example of using <enum> for states checking
 enum State {New = 1, Complete, Deleted} // start numeration from 1 instead of 0
-if(some.state === State.New) {}
+if (some.state === State.New) {}
 ```
 - any
 ```TypeScript
@@ -92,9 +88,10 @@ function foo(): void {} // function that does not return a value
 ```
 - never
 
-### Advanced Types
+## Advanced Types
 
-#### Union Types (one or another)
+### Union Types
+Basically, it's `one or another` syntax.
 ```TypeScript
 function foo(bar: (string | any[])) {
   // Type Guards
@@ -109,7 +106,7 @@ function foo(bar: (string | any[])) {
 ```
 
 ### Types assertion
-Is used purely by the compiler and is a way to tell the compiler “trust me, I know what I’m doing.”
+Is used only by the compiler. It is a way to tell the compiler `“trust me, I know what I’m doing.”`
 (like a type cast, but without special checking or restructuring of data).
 ```TypeScript
 let val: any = "text";
@@ -129,7 +126,7 @@ function len(x: {length: number}) {
 } // function accepts only variables with numeric "length" property
 ```
 
-### Interfaces
+## Interfaces
 They are compile-time features.
 ```TypeScript
 interface Fruit {
@@ -141,7 +138,7 @@ let fruit1 = <Fruit>{name: "apple"};
 let fruit2: Fruit = {name: "strawberry"};
 ```
 
-#### Interfaces for method declarations
+### Interfaces for method declarations
 ```TypeScript
 interface IFruitService {
     add(fruit: Fruit): Fruit;
@@ -149,7 +146,7 @@ interface IFruitService {
 }
 ```
 
-#### Function Types
+### Function Types
 ```TypeScript
 interface jQuery {
     (selector: string): HTMLElement;
@@ -163,8 +160,8 @@ let $2 : jQuery;
 $2 = function (selector) {};
 ```
 
-#### Readonly and const
-Variables use const whereas properties use readonly.
+### Readonly and const
+Variables use `const` whereas properties use `readonly`.
 ```TypeScript
 interface Point {
     readonly x: number;
@@ -177,8 +174,8 @@ arr.push(5); // error
 ```
 <!--TODO: finish Interfaces learning https://www.typescriptlang.org/docs/handbook/interfaces.html -->
 
-### Overload functions
-A function that accepts 2 strings or 2 arrays only.
+## Overload functions
+As a self-explanatory example, function that accepts 2 strings or 2 arrays only:
 ```TypeScript
 function overloaded(x: any[], y: any[]);
 function overloaded(x: string, y: string);
@@ -186,21 +183,21 @@ function overloaded(x: (string|any[]), y: (string|any[])) {
     return x.toString();
 }
 ```
-Notice: The last signature **must** be a super set of all previous signatures.
+**Notice:** The last signature **must** be a super set of all previous signatures.
 
-### Classes
-A brief prototype intro on example of method searching:
+## Classes
+A brief prototype reminding on example of method searching:
 ```JavaScript
 current.method || current.prototype.method || current.prototype.prototype.method || ... || Object.prototype.method || TypeError;
 ```
 
-#### Static members
+### Static members
 Static assumes one variable for the entire application. One way of implementing is:
 ```JavaScript
 var global = "" // at the global scope
 ```
 But assigning variables directly to global scope is considered as a bad practice.
-So, to avoid global scope we can do:
+So, to avoid global scope we can write:
 ```TypeScript
 class ClassName {
     static id: number = 0;
@@ -210,7 +207,7 @@ class ClassName {
 }
 ```
 
-#### Getters & Setters
+### Getters & Setters
 ```TypeScript
 class ClassName {
     _state: number = 0;
@@ -223,7 +220,7 @@ class ClassName {
 }
 ```
 
-#### Inheriting behavior from a Base Class
+### Class extending
 ```TypeScript
 class ClassName {
     constructor(private name: string) {}
@@ -243,7 +240,7 @@ class ClassChild extends ClassName {
 }
 ```
 
-#### Abstract Classes & Methods
+### Abstract Classes & Methods
 ```TypeScript
 abstract class AbsClass {
     abstract methodName(input: string): boolean; // MUST be implemented in every child class
@@ -255,7 +252,7 @@ class AbsChild extends AbsClass {
 }
 ```
 
-#### Access modifiers
+### Access modifiers
 ||Class|Subclass|Other Classes|
 |---|---|---|---|
 |**public**|✓|✓|✓|
@@ -274,7 +271,7 @@ class ClassName {
 }
 ```
 
-#### Implementing interfaces
+### Implementing interfaces
 ```TypeScript
 interface IClassService {
     add(name: string): string;
@@ -291,18 +288,18 @@ class ClassService implements IClassService, ISomeGenerator {
 }
 ```
 
-### Generic Types
+## Generic Types
 Let's try to be oblivious: “generic” means general.
 
 The main goal of Generic Types usage is to **provide type-safety** and to resolve type-casting problems.
 
-#### Naming conventions
+### Naming conventions
 |Template|Examples|Explanation|
 |---|---|---|
 |char >= T|T, U, V| Uppercase characters starting from T (type).|
 |T${Name}|TKey, TValue| T-prefixed sensible names.|
 
-#### Usage with Functions
+### Usage with Functions
 ```TypeScript
 function Max<T>(a: T, b: T): T {
     return a > b ? a : b;
@@ -313,7 +310,7 @@ Max("string", "");
 Max("string", 42); // error
 ```
 
-#### Usage with Classes
+### Usage with Classes
 ```TypeScript
 class Dictionary<TKey, TValue> {
     add(key: TKey, value: TValue) {}
@@ -326,8 +323,8 @@ myDict.add("apple", {number: 10});
 myDict.add("banana", 10); // error
 ```
 
-#### Generic Constraints (limitations)
-Supplied by ```extends``` keyword usage (```where``` keyword in C#).
+### Generic Constraints (limitations)
+Supplied by `extends` keyword usage (`where` keyword in C#).
 ```TypeScript
 function LongerOne<T extends {length: number}>(a: T, b: T): T {
     return a.length > b.length ? a : b;
