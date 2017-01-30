@@ -33,7 +33,9 @@ In general, `TypeScript === JavaScript (edge) + Static Typing`.
   - [Usage with Functions](#usage-with-functions)
   - [Usage with Classes](#usage-with-classes)
   - [Generic Constraints (limitations)](#generic-constraints-limitations)
-  - [Modules](#modules)
+- [Modules](#modules)
+  - [External](#external)
+  - [Internal](#internal)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -371,4 +373,50 @@ LongerOne([], ""); // error
 // accepting extends classes
 class CustomArray<T> extends Array<T> {}
 LongerOne([], new CustomArray());
+```
+
+## Modules
+Main goal is getting out of a global namespace.
+
+### External
+Supports [ES6 external modules](ES6.md#modules) and old `require()` syntax.
+Both `require()` and `import` generates the same code.
+
+`tsconfig.json` to support external modules:
+```JavaScript
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "system"
+    }
+}
+```
+
+### Internal
+Provides us with the `namespaces` - syntactic sugar to wrap code in a `IIFE`.
+```TypeScript
+namespace AppName {
+    // code
+}
+
+// compiles to
+var AppName;
+(function (AppNAme) {
+    // code
+})(TodoApp || (TodoApp = {}));
+```
+
+Things in the namespaces are private by default (so it is a nice technique to `encapsulate` variables).
+
+When required, they may be `imported` and `exported`.
+```TypeScript
+namespace AppName.Model {
+    export enum AppStates {New, Active}
+}
+
+namespace AppName.Controller {
+    let state = AppName.Model.States.New;
+    // or
+    import Model = AppName.Model;
+}
 ```
