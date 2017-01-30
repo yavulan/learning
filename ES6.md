@@ -1,4 +1,32 @@
 # ES6
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Declarations](#declarations)
+  - [Cleaner code in inner functions with `let`](#cleaner-code-in-inner-functions-with-let)
+  - [Errors with `let` and `const`](#errors-with-let-and-const)
+- [Arrow function =>](#arrow-function-)
+  - [In ES5](#in-es5)
+  - [In ES6](#in-es6)
+- [Spread operator ...](#spread-operator-)
+- [Destructing](#destructing)
+- [Rest operator ...](#rest-operator-)
+- [Classes](#classes)
+- [Modules](#modules)
+  - [Old syntax](#old-syntax)
+  - [Export](#export)
+  - [Import](#import)
+  - [Module loaders](#module-loaders)
+- [Template strings](#template-strings)
+- [For..of](#forof)
+- [Promises↗](#promises%E2%86%97)
+  - [Advantages](#advantages)
+  - [Performance](#performance)
+  - [Methods](#methods)
+  - [Other techniques](#other-techniques)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Declarations
 | Declaration | Description                                                                                                                  | Hoisting                                                                                           |
@@ -9,7 +37,7 @@
 
 **hoisting: declaring a variable anywhere in the code is equivalent to declaring it at the top.*
 
-### Cleaner code in inner functions with ```let```:
+### Cleaner code in inner functions with `let`
 ```javascript
 let arr = [];
 
@@ -21,7 +49,7 @@ arr[0](); // 0
 arr[1](); // 1
 ```
 
-### Errors with ```let``` and ```const```:
+### Errors with `let` and `const`
 
 1. Redeclaring the same variable within the same function or block scope raises a SyntaxError:
 
@@ -39,14 +67,14 @@ arr[1](); // 1
   ```
 
 ## Arrow function =>
-### In ES5:
+### In ES5
 ```javascript
 var foo = function( a, b ) {
     return a + b;
 };
 ```
 
-### In ES6:
+### In ES6
 Arrow function automatically binds *this* (lexical context binding), so be careful.
 ```javascript
 // ( parameters ) => { statement/expression }
