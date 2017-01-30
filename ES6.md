@@ -194,28 +194,59 @@ class Child extends Parent {
 ```
 
 ## Modules
+Helps up to avoid global namespace corruption.
+Stored in files. There is exactly one module per file and one file per module.
+
+### Old syntax
+```JavaScript
+import Model = require("./model"); // not specifying extension
+import Todo = Model.Todo;
+```
+
 ### Export
-```javascript
-export default {
-	// some object in here
+```JavaScript
+export let foo = 1, bar = 2;
+export const count = 42;
+export function sum(x, y) {
+    return x + y;
 }
 
-// functions exporting
-export default function(){}
-export function foo(){}
+// now, to import required:
+import { count, sum } from "lib";
+```
 
-// variable declaring in exproting is allowed
-export let foo = 1, bar = 2;
+#### Default
+There can be a `single default export` (anonymous declarations without semicolon at the end).
+```JavaScript
+export default function () {} // no semicolon!
+
+// importing:
+import myFunction from "myFunction";
+myFunction();
+
+// the same with classes:
+export default class {} // no semicolon!
+
+import MyClass from "MyClass";
+let instance = new MyClass();
 ```
 
 ### Import
-```javascript
-import someModule from 'someModule';
-import { foo, bar as barry } from 'someModule';
+```JavaScript
+import * as lib from "./lib";
+import { SomeClass, somethingElse } from "./model";
+import { SomeClass as MyClass, somethingElse } from "./model";
+
+// import full script
+import "./jQuery";
 
 // lodash example
 import { chunk, forEach } from 'lodash';
 ```
+
+### Module loaders
+Used for in-browser support (and NodeJS).
+- [system.js](https://github.com/systemjs/systemjs)
 
 ## [Template strings](String.md#stringraw)
 
