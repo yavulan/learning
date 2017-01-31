@@ -25,6 +25,7 @@
   - [Performance](#performance)
   - [Methods](#methods)
   - [Other techniques](#other-techniques)
+- [Object.assign()](#objectassign)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -363,4 +364,24 @@ async function foo() {
     await sleep(200);
     // other stuff
 }
+```
+
+## Object.assign()
+Copies values of all `enumerable` own properties from objects to a target object.
+Returns the target object.
+```JavaScript
+// Object.assign(target, ...sources)
+
+// create a copy of an object
+let driver = {name: "James"};
+let driverCopy = Object.assign({}, driver);
+
+// in case of combining same properties - last one is prioritized
+let driver1 = {name: "James", age: 42};
+let driver2 = {name: "John"};
+Object.assign(driver1, driver2); // {name: "John", age: 42}
+
+// just adding some properties
+Object.assign(driver1, {destination: "London"}); // {name: "John", age: 42, destination: "London"}
+driver1; // Object {name: "John", age: 42, destination: "London"}
 ```
