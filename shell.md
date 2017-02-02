@@ -1,3 +1,5 @@
+`OS` is a layer between a hardware and a software.
+
 ## Windows
 
 ### Files
@@ -79,3 +81,188 @@ for /l %x in (1, 1, 10) do (
 |F1| Sequential repeat of characters of the previously entered command-line.|
 |**F7**| **Displays a history of command-line entries for the current session.**|
 |F8| Sequentially displays previous command-line entries.|
+
+## Linux
+OS frequently used to run servers.
+
+Versions of distribution packages:
+- desktop version;
+- server version (stripped down, without GUI and additional tools).
+
+### Console
+```Shell
+# Clear screen
+clear
+
+# Help on a command (manual)
+man commandName
+```
+
+### Files
+```Shell
+# Create a file
+touch /path/to/filename
+
+# Copy file
+cp file filecopy
+```
+
+### Directory
+```Shell
+# Print working directory
+pwd
+
+# Print list of contents for current directory
+ls
+
+# Navigation
+cd folder
+
+# Create directory
+mkdir dirName
+```
+
+### Deleting
+```Shell
+# Remove a file
+rm filename
+
+# Delete empty directory
+rmdir dirName
+
+# Delete non-empty directory
+rm -r dirName
+```
+
+### Administration (Ubuntu)
+
+#### Introduction
+```Shell
+# In Ubuntu u can't login as a root, so
+# Super-user do (like run as administrator under Windows)
+sudo
+
+# Get some predefined software packages `tasksel`
+# (select with spacebar)
+sudo tasksel
+
+# Install individual packages
+sudo apt-get install <package>
+sudo apt-get install apache2
+
+# To uninstall
+sudo apt-get remove apache2
+
+# To update installed software
+sudo apt-get upgrade
+```
+
+#### Services
+```Shell
+sudo /etc/init.d/apache2 <start, stop, restart>
+```
+
+#### Users
+```Shell
+# Users list
+sudo vim /etc/passwd
+
+# Users management
+sudo adduser <username>
+sudo userdel <username>
+sudo passwd <username>
+```
+
+#### Permissions
+An example is : `777`.
+- 1st digit represents `owner` permission;
+- 2nd digit represents `users group` permission;
+- 3d digit represents `everyone` in the world permission.
+
+Binary numbers permissions:
+
+|1st|2nd|3d|result
+|---|---|---|---|
+|rwx|rwx|rwx||
+|111|111|111|777|
+|111|111|101|775|
+|111|111|100|774|
+|111|111|001|771|
+|111|111|000|770|
+
+```Shell
+# Modify permission for file
+sudo chmod 777 <file>
+
+# Folder and it contents recursively
+sudo chmod 777 <folder> -R
+```
+
+#### Ownership
+```Shell
+# Change ownership
+sudo chown <username> <filename>
+sudo chown <username> <foldername> -R
+```
+
+#### Task manager
+```Shell
+# Like a task manager on Windows
+top
+
+# To kill a process
+k <process-id>
+```
+
+#### VIM - text editor
+```Shell
+# Openning
+#  -Open existing file / create & open file
+sudo vim <filename>
+#  -Open other file from a VIM
+:e <filename>
+
+# Insert mode
+#  -Enter
+a
+#  -Out
+ESC
+
+# Search
+#  -Search down
+:/ *<term>*
+# -Search up
+:? *<term>*
+#  -Next result
+n
+
+# Quitting
+#  -Quit VIM
+:q
+# -Force shutdown of VIM
+:q!
+
+# Saving
+#  -Save & exit
+:wq
+#  -Save as
+:w <fileCopyName>
+```
+
+#### Mounting drives
+Mounting external hard drives.
+```Shell
+# 1. Create a folder
+sudo mkdir /mnt/<driveName>
+sudo mkdir /mnt/drive
+
+# 2. List all connected hard drives
+fdisk -l
+
+# 3. Mount drive to a folder
+sudo mount <hard id> <folder to mont>
+sudo mount /dev/sda3 /mnt/drive
+
+# To unmount
+sudo umount /dev/sda3 /mnt/drive
+```
