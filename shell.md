@@ -135,6 +135,7 @@ rm -r dirName
 ```
 
 ### Administration (Ubuntu)
+Note: file associations doesn't mean anything for Linux.
 
 #### Introduction
 ```Shell
@@ -265,4 +266,119 @@ sudo mount /dev/sda3 /mnt/drive
 
 # To unmount
 sudo umount /dev/sda3 /mnt/drive
+```
+
+#### Network
+```Shell
+# Info on network cards
+ifconfig
+
+# Release & renew IP address
+dhclient
+
+# Restart
+/etc/init.d/networking {start/stop/restart}
+
+# Control network & IP addresses for network cards on system
+/etc/network/interfaces
+
+# Edit DNS info
+/etc/resolv.conf/
+
+# Edit host name of computer
+/bin/hostname
+
+# Ping
+# (just keep pinging until stopped with `Ctrl + C`)
+# Ping router with IP 10.1.10.1
+ping 10.1.10.1
+
+# Check if DNS is working
+ping website.com
+```
+
+#### Firewall (UFW)
+```Shell
+ufw status
+ufw default {allow/deny}
+ufw {enable/disable}
+
+# Rules for ports
+ufw allow 80
+ufw deny 22
+
+# Delete a rule
+ufw delete {allow/deny} {port}
+ufw delete allow 80
+
+# Block or allow IP's
+ufw {allow/deny} from {IP}
+ufw allow from 210.10.*.*
+
+ufw allow from 210.10.*.* to {port}
+ufw allow from 210.10.*.* to 80
+```
+
+#### SSH
+Secure Shell (SSH) is a network protocol for operating network services securely over an unsecured network (with terminal emulator.).
+
+Installing:
+```Shell
+apt-get install ssh
+```
+
+By default, it uses port 22.
+There is a terminal emulator on Windows & other OS's - `Putty`.
+
+#### FTP
+```Shell
+# Get FTP
+apt-get install vsftpd
+
+# Set up
+/etc/vsftpd.conf
+
+# Uncomment following:
+# local_enable = yes
+# write_enable = yes
+
+# Restart
+service vsftpd restart
+```
+
+#### Backup with TAR
+TAR - backup software for Linux.
+```Shell
+# tar -
+# c // create or override backup file
+# v // verbose - tell me what is going on during the process
+# p // preserve permissions
+# z // use compression
+# f // create filename with tar
+
+tar -cvpzf backup.tar.gz /var/www
+
+# Excluding directory
+tar -cvpzf backup.tar.gz --exclude=/var/www/video /var/www
+
+# Restoring the backup
+# tar -
+# x // extract
+# C // change directory
+
+tar -xvpzf backup.tar.gz -C /recover
+```
+
+#### Cron jobs
+Cron is a time-based job scheduler in Unix-like computer operating systems.
+```Shell
+crontab -e
+```
+
+|m|h|dom|m|dow|command|
+|---|---|---|---|---|---|
+|0..59|0..23|1..31|1..12|0..6||
+Example:
+```
+45 5 * * 2 sudo tar -cvpzf backup.tar.gz /var/www
 ```
