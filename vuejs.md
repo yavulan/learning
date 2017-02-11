@@ -1,5 +1,53 @@
 #### Vue.js is a JavaScript Framework [↗](https://vuejs.org/).
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Install and build](#install-and-build)
+- [Introducing Vue.js](#introducing-vuejs)
+  - [Simple example](#simple-example)
+  - [Some advantages](#some-advantages)
+  - [Listening](#listening)
+- [Template expression](#template-expression)
+- [Directives](#directives)
+  - [v-once](#v-once)
+  - [v-text](#v-text)
+  - [v-html](#v-html)
+  - [v-on](#v-on)
+    - [Passing own arguments](#passing-own-arguments)
+    - [Event modifiers](#event-modifiers)
+    - [Keyboard events](#keyboard-events)
+    - [Shortcut](#shortcut)
+  - [v-bind](#v-bind)
+    - [Binding classes](#binding-classes)
+    - [Binding styles](#binding-styles)
+    - [Shortcut](#shortcut-1)
+  - [v-model](#v-model)
+    - [Modifiers](#modifiers)
+- [Control flow](#control-flow)
+  - [v-if](#v-if)
+    - [Grouping same-level elements](#grouping-same-level-elements)
+  - [v-show](#v-show)
+- [Looping](#looping)
+  - [v-for](#v-for)
+    - [Array](#array)
+    - [Object](#object)
+    - [Numbers](#numbers)
+    - [:key](#key)
+- [Vue instance](#vue-instance)
+  - [Computed properties](#computed-properties)
+  - [Watch](#watch)
+- [Components](#components)
+  - [Exporting](#exporting)
+  - [Data transferring](#data-transferring)
+  - [Styling](#styling)
+  - [Example of app organisation](#example-of-app-organisation)
+- [Additional tools](#additional-tools)
+- [Code Styling](#code-styling)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Install and build
 ```Shell
 npm install -g vue-cli
