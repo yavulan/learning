@@ -66,6 +66,14 @@ npm run dev
 npm run build
 ```
 
+Types of templates:
+
+1. `simple` - index.html + Vue CDN.
+2. `webpack-simple`.
+3. `webpack` - includes testing.
+4. `browserify-simple`.
+5. `browserify`.
+
 # Introducing Vue.js
 ## Simple example
 ```HTML
@@ -78,7 +86,7 @@ let data = {
     message: "Hello!"
 };
 
-let app = new Vue({
+let vm = new Vue({
     el: "#app",
     data: {
         message: data
@@ -303,7 +311,7 @@ Creates two-way data binding (between form elements and app data).
 </div>
 
 <script>
-let app = new Vue({
+let vm = new Vue({
   el: '#app',
   data: {
     message: 'Hello!'
@@ -376,7 +384,78 @@ To be super safe and keep current order and values use `:key`.
 ```
 
 # Vue instance
-## Computed properties
+
+## Lifecycle
+1. new Vue()
+2. `beforeCreate()`
+    - observe data & init events
+2. `created()`
+    - compile template of el's template
+3. `beforeMount()`
+    - replace el with compiled template
+4. `mounted()` to the DOM
+    1. on data changed - `beforeUpdate()`
+    2. after re-rendering DOM - `updated()`
+5. `beforeDestroy()`
+    - teardown watchers, child components, event listeners.
+6. `destroyed()`
+
+```JavaScript
+let vm = new Vue({
+  data: {},
+  beforeCreate: function() {},
+  created: function() {},
+  beforeMount: function() {},
+  mounted: function() {},
+  beforeUpdate: function() {},
+  updated: function() {},
+  beforeDestroy: function() {},
+  destroyed: function() {},
+});
+```
+
+## Accessing from the outside
+Access is proxied by Vue.js for `data`, `computed` and `methods`.
+```JavaScript
+let vm = new Vue({
+  data: {
+    name: "John"
+  },
+  computed: {
+    title: function(){ return "title"; }
+  },
+  methods: {
+    show: function() { return; }
+  }
+});
+
+vm.name;
+vm.$data.name;
+
+vm.title;
+vm.show();
+```
+
+## el
+Accepts any CSS selector and affects `first` item this selector meets.
+To affect multiple elements use components.
+
+## $mount
+Allows passing element selector outside Vue constructor.
+
+```JavaScript
+let vm = new Vue({
+  data: {}
+});
+
+vm.$mount('#app');
+```
+
+## methods
+All methods have `this` context automatically bounded to the Vue instance.
+Note: don't use arrow function to define a method (it will be bound to wrong context).
+
+## computed
 Computed properties used as a typical data properties. The main difference - they are optimized.
 Runs synchronously (immediately).
 
@@ -389,7 +468,7 @@ new Vue({
 });
 ```
 
-## Watch
+## watch
 No need to return anything. Used for async operations.
 
 ```JavaScript
@@ -403,13 +482,55 @@ new Vue({
 });
 ```
 
+## $refs
+Allows access to DOM element directly. Use whenever it is required to access native element.
+
+```HTML
+<div id="app">
+    <span ref="mySpan @click="show"></span>
+</div>
+
+<script>
+new Vue({
+  data: {},
+  methods: {
+    show: function() {
+        this.$refs.mySpan.innerText = "New Text!";
+    }
+  }
+});
+</script>
+```
+
+## template
+```JavaScript
+let vm = new Vue({
+  template: "<h2>Hello!</h2>"
+});
+
+vm.$mount('#app');
+
+// vm.$el now contains template
+```
+
+## render
+Renders `*.vue` template.
+```JavaScript
+import App from './App.vue';
+
+new Vue({
+    el: '#app',
+    render: h => h(App)
+});
+```
+
 # Components
 Reusable, provides project with organization and encapsulation.
-Can be separated in to ```*.vue``` files.
+Can be separated in to ```*.vue``` files as a single-file templates.
 ```JavaScript
 Vue.component('componentName', {
     template: '<li>Some templating</li>'
-})
+});
 ```
 Using components:
 ```HTML
@@ -464,7 +585,7 @@ Vue.component('todo-item', {
   template: '<li>{{ todo.text }}</li>'
 });
 
-let app = new Vue({
+let vm = new Vue({
   el: '#app',
   data: {
     list: [
