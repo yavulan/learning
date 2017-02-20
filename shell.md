@@ -1,5 +1,50 @@
 `OS` is a layer between a hardware and a software.
 
+## npm
+```Shell
+# Create a package.json
+npm init
+
+# Install
+#
+## Globally
+npm install -g <package>
+## Locally
+npm install <package>
+### To use global module in local project
+npm link <package>
+
+# Update
+#
+## Globally
+npm update -g <package>
+## Locally
+npm update
+npm update <package>
+
+# Test outdated packages
+#
+## Globally
+npm outdated -g --depth=0
+## Locally
+npm outdated
+
+# Uninstall
+#
+## Globally
+npm uninstall -g <package>
+## Locally
+npm uninstall <package>
+
+# Flags
+#
+## dependencies (for production)
+npm install <package> --save
+npm uninstall --save <package>
+## devDependencies (for development & testing)
+npm install <package> --save-dev
+```
+
 ## Windows
 
 ### Files
