@@ -365,7 +365,7 @@ ufw allow from 210.10.*.* to 80
 ```
 
 #### SSH
-Secure Shell (SSH) is a network protocol for operating network services securely over an unsecured network (with terminal emulator.).
+Secure Shell (SSH) is a network protocol for operating network services securely over an unsecured network (with terminal emulator).
 
 Installing:
 ```Shell
@@ -423,6 +423,7 @@ crontab -e
 |m|h|dom|m|dow|command|
 |---|---|---|---|---|---|
 |0..59|0..23|1..31|1..12|0..6||
+
 Example:
 ```
 45 5 * * 2 sudo tar -cvpzf backup.tar.gz /var/www
