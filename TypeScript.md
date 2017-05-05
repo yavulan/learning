@@ -148,7 +148,7 @@ function foo(bar: (string | any[])) {
 ```
 
 ### Types assertion
-Is used only by the compiler. It is a way to tell the compiler `“trust me, I know what I’m doing.”`
+Used only by the compiler. It is a way to tell the compiler `“trust me, I know what I’m doing”`
 (like a type cast, but without special checking or restructuring of data).
 ```TypeScript
 let val: any = "text";
@@ -238,8 +238,8 @@ Static assumes one variable for the entire application. One way of implementing 
 ```JavaScript
 var global = "" // at the global scope
 ```
-But assigning variables directly to global scope is considered as a bad practice.
-So, to avoid global scope we can write:
+But assigning variables directly to the global scope considered as a bad practice.
+So, to avoid global scope, we can write:
 ```TypeScript
 class ClassName {
     static id: number = 0;
@@ -381,7 +381,7 @@ LongerOne([], new CustomArray());
 ```
 
 ## Modules
-Main goal is getting out of a global namespace.
+The main goal is getting out of a global namespace.
 
 ### External
 Supports [ES6 external modules](ES6.md#modules) and old `require()` syntax.
@@ -406,9 +406,9 @@ namespace AppName {
 
 // compiles to
 var AppName;
-(function (AppNAme) {
+(function (AppName) {
     // code
-})(TodoApp || (TodoApp = {}));
+})(AppName || (AppName = {}));
 ```
 
 Things in the namespaces are private by default (so it is a nice technique to `encapsulate` variables).
@@ -475,4 +475,20 @@ By the way, when developing a library, it is a good practice to create and inclu
         "sourceMap": true
     }
 }
+```
+
+## decorators
+modify the behavior
+
+reduce duplicates
+code more readable
+
+1. classes
+2. methods
+3. properties
+4. parameters
+
+wrapping other methods
+```
+@log
 ```
