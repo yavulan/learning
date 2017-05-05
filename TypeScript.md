@@ -476,19 +476,3 @@ By the way, when developing a library, it is a good practice to create and inclu
     }
 }
 ```
-
-## decorators
-modify the behavior
-
-reduce duplicates
-code more readable
-
-1. classes
-2. methods
-3. properties
-4. parameters
-
-wrapping other methods
-```
-@log
-```
