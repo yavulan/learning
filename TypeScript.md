@@ -36,6 +36,11 @@ In general, `TypeScript === JavaScript (edge) + Static Typing`.
 - [Modules](#modules)
   - [External](#external)
   - [Internal](#internal)
+- [Migrating from JavaScript](#migrating-from-javascript)
+  - [Third party JavaScript code](#third-party-javascript-code)
+    - [Trivial declarations](#trivial-declarations)
+    - [Ambient declarations](#ambient-declarations)
+- [Debugging](#debugging)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -418,5 +423,56 @@ namespace AppName.Controller {
     let state = AppName.Model.States.New;
     // or
     import Model = AppName.Model;
+}
+```
+
+## Migrating from JavaScript
+TypeScript is a superset of JavaScript so it is not so hard.
+
+1. Create `tsconfig.json`.
+2. Rename `*.js` to `*.ts`. Start suppressing errors using `any`.
+3. Rewrite code using `ES6` & `TypeScript` features.
+4. Use `ambient declarations` for third party JavaScript code.
+
+### Third party JavaScript code
+There are a few ways to tell TypeScript engine that we are using third-party libraries.
+
+#### Trivial declarations
+```
+declare var $: any; // does nothing, just suppresses errors
+declare function require(path: string): any;
+```
+
+#### Ambient declarations
+Provides some real TypeScript support. Used for utility libraries.
+
+By the way, when developing a library, it is a good practice to create and include such declaration files.
+
+`tsconfig.json` to support declarations:
+```JavaScript
+{
+    "compilerOptions": {
+        "target": "es5",
+        "declaration": true
+    }
+}
+```
+
+##### Outer links
+* [TypeScript type definitions](https://github.com/DefinitelyTyped/DefinitelyTyped)
+* [TypeScript Definition Manager](https://github.com/typings/typings)
+   ```
+   npm install -g typings
+   ```
+
+## Debugging
+`tsconfig.json` to enable source maps:
+
+```JavaScript
+{
+    "compilerOptions": {
+        "target": "es5",
+        "sourceMap": true
+    }
 }
 ```
