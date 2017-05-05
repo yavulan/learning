@@ -438,7 +438,7 @@ TypeScript is a superset of JavaScript so it is not so hard.
 There are a few ways to tell TypeScript engine that we are using third-party libraries.
 
 #### Trivial declarations
-```
+```TypeScript
 declare var $: any; // does nothing, just suppresses errors
 declare function require(path: string): any;
 ```
