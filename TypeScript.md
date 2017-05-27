@@ -41,6 +41,7 @@ In general, `TypeScript === JavaScript (edge) + Static Typing`.
     - [Trivial declarations](#trivial-declarations)
     - [Ambient declarations](#ambient-declarations)
 - [Debugging](#debugging)
+- [Decorator](#decorator)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -476,3 +477,35 @@ By the way, when developing a library, it is a good practice to create and inclu
     }
 }
 ```
+
+## [Decorator](https://www.typescriptlang.org/docs/handbook/decorators.html)
+Is a special kind of declaration that allows us to dynamically add alternate processing to objects.
+
+`tsconfig.json` to enable source maps:
+```JavaScript
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "experimentalDecorators": true
+    }
+}
+```
+
+Some benefits of usage:
+
+* reduces duplicates
+* more readable code
+
+Decorators use the form `@expression`, where expression must evaluate to a function.
+
+```TypeScript
+@log @someAnotherStuff x
+```
+
+Decorators can be attached to a:
+
+* class
+* method
+* accessor
+* property
+* parameter
