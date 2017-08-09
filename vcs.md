@@ -9,6 +9,7 @@
 - [Global .gitignore](#global-gitignore)
 - [Commit](#commit)
 - [Branch](#branch)
+  - [Push new current local branch to the same name on the remote](#push-new-current-local-branch-to-the-same-name-on-the-remote)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -56,4 +57,9 @@ Use branches and practice good branch hygiene (delete branches as they are merge
 If you delete a branch on your machine and this branch no longer required on the upstream, delete it on there too.
 ```Shell
 git push origin --delete <branch name>
+```
+
+### Push new current local branch to the same name on the remote
+```Shell
+git push -u origin HEAD
 ```
