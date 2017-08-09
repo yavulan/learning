@@ -10,6 +10,7 @@
 - [Commit](#commit)
 - [Branch](#branch)
   - [Push new current local branch to the same name on the remote](#push-new-current-local-branch-to-the-same-name-on-the-remote)
+- [Lifecycle example](#lifecycle-example)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -61,5 +62,19 @@ git push origin --delete <branch name>
 
 ### Push new current local branch to the same name on the remote
 ```Shell
+git push -u origin HEAD
+```
+
+## Lifecycle example
+```Shell
+git clone <repo> && cd <repo>
+git checkout -b <newBranchName>
+
+# Coding time :)
+
+git status
+git add <fileNames>
+git diff --cached
+git commit -m "Change description"
 git push -u origin HEAD
 ```
