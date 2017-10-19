@@ -45,6 +45,16 @@ npm uninstall --save <package>
 npm install <package> --save-dev
 ```
 
+## Command line shortcuts
+
+|Action|Windows|Unix|
+|---|---|---|
+|Abort current command/typing	|`Ctrl`+`C`|`Ctrl`+`C`|
+|Erase word to the left	|`Ctrl`+`Backspace`|`Ctrl`+`W`|
+|Erase word to the right |`Ctrl`+`Delete`|`Alt`+`D`|
+|Erase line to the left	|`Ctrl`+`Home`|`Ctrl`+`U`|
+|Erase line to the right |`Ctrl`+`End`|`Ctrl`+`K`|
+
 ## Windows
 
 ### Files
