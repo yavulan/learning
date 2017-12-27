@@ -27,7 +27,7 @@ it will get all values in the stream that are emitted after it subscribes.
 ## Subject
 
 A Subject is like an Observable, but can multicast to many Observers.
-Subjects are like EventEmitters: they maintain a registry of many listeners.
+At a high-level Subjects can be thought of as messengers, or proxies.
 
 Every Subject is an Observable.
 Every Subject is an Observer.
