@@ -15,6 +15,10 @@
     - [Interface](#interface-1)
     - [Rules to follow](#rules-to-follow)
     - [Example](#example-1)
+  - [Examples](#examples)
+    - [Reducers index](#reducers-index)
+    - [Inside the app.module](#inside-the-appmodule)
+    - [Inside the component](#inside-the-component)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -174,5 +178,66 @@ export function reducer(state = initialState, action: Action): State {
       return state;
     }
   }
+}
+```
+
+## Examples
+
+### Reducers index
+
+`reducers/index.ts`
+```TypeScript
+import { ActionReducerMap } from '@ngrx/store';
+
+import * as fromExample1 from './example1.reducer';
+import * as fromExample2 from './example2.reducer';
+
+export interface State {
+  example1: fromExample1.State;
+  example2: fromExample2.State;
+}
+
+export const reducers: ActionReducerMap<State> = {
+  example1: fromExample1.reducer,
+  example2: fromExample2.reducer,
+}
+```
+
+### Inside the app.module
+
+```TypeScript
+import { StoreModule } from '@ngrx/store';
+import { reducers } from './reducers';
+
+@NgModule({
+  imports: [
+    StoreModule.forRoot(
+      reducers,
+      // { initialState: {} }
+      ),
+  ],
+})
+export class AppModule {}
+```
+
+### Inside the component
+
+```TypeScript
+import { Store } from '@ngrx/store';
+
+import * as fromRoot from './reducers';
+import * as ExampleActions from './example-actions';
+
+@Component({})
+export class ExampleComponent {
+    constructor(private store: Store<fromRoot.State>) {}
+
+    setExample(input): void {
+        this.store.dispatch(new ExampleActions.ActionName(input));
+    }
+
+    getExample(): Observable<any> {
+        return this.store.select(fromRoot.selectResults);
+    }
 }
 ```
