@@ -19,6 +19,9 @@
     - [Reducers index](#reducers-index)
     - [Inside the app.module](#inside-the-appmodule)
     - [Inside the component](#inside-the-component)
+  - [Components categories](#components-categories)
+    - [Smart (Container components)](#smart-container-components)
+    - [Dumb (Child components)](#dumb-child-components)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -241,3 +244,24 @@ export class ExampleComponent {
     }
 }
 ```
+
+## Components categories
+
+*Credits to [btroncone](https://gist.github.com/btroncone/a6e4347326749f938510).*
+
+Components in Store application falls into one of two categories: **smart** or **dumb**.
+
+### Smart (Container components)
+
+* routable components at root level;
+* have direct access to the store (or to a derivative);
+* handle view events and the dispatching of actions (through a service or directly);
+* handle the logic behind events emitted up from child components within the same view.
+
+### Dumb (Child components)
+
+* generally for presentation only;
+* rely exclusively on `@Input` parameters;
+* when relevant events occur in dumb components, they are emitted up to be handled by a parent smart component;
+* make up the majority of your application;
+* should be small, focused, and reusable.
