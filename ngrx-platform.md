@@ -15,6 +15,7 @@
     - [Interface](#interface-1)
     - [Rules to follow](#rules-to-follow)
     - [Example](#example-1)
+  - [AsyncPipe](#asyncpipe)
   - [Examples](#examples)
     - [Reducers index](#reducers-index)
     - [Inside the app.module](#inside-the-appmodule)
@@ -22,6 +23,7 @@
   - [Components categories](#components-categories)
     - [Smart (Container components)](#smart-container-components)
     - [Dumb (Child components)](#dumb-child-components)
+      - [Performance](#performance)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -139,7 +141,7 @@ Combination of reducers makes up a representation of application state at any gi
 
 * rely only on it's arguments;
 * doesn't produce observable side-effects;
-* doesn't modify input values (creates new ones).
+* doesn't modify input values (creates new ones when required).
 
 ### Interface
 
@@ -183,6 +185,16 @@ export function reducer(state = initialState, action: Action): State {
   }
 }
 ```
+
+## AsyncPipe
+
+The **AsyncPipe** can handle `Observables` and `Promises` in template.
+
+```HTML
+{{ stream$ | async }}
+```
+
+This pipe also handles unsubscribing (no need to manually cleaning up subscriptions on destroy).
 
 ## Examples
 
@@ -265,3 +277,11 @@ Components in Store application falls into one of two categories: **smart** or *
 * when relevant events occur in dumb components, they are emitted up to be handled by a parent smart component;
 * make up the majority of your application;
 * should be small, focused, and reusable.
+
+#### Performance
+
+When components rely only on `@Input` parameters, and those input references do not change,
+it is possible to tell Angular to skip running change detection
+(until there is a change in input references) to provide performance benefit.
+
+To enable this utilize the `changeDetectionStrategy` of `OnPush`.
