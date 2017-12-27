@@ -31,6 +31,7 @@
     - [Functions](#functions)
       - [createSelector](#createselector)
       - [createFeatureSelector](#createfeatureselector)
+  - [Meta Reducers](#meta-reducers)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -363,4 +364,43 @@ Returns a typed selector function for a feature slice of state.
 // export const selectFeature = (state: AppState) => state.feature;
 // becomes
 export const selectFeature = createFeatureSelector<FeatureState>('feature');
+```
+
+## Meta Reducers
+
+@ngrx/store composes map of reducers into a single reducer.
+
+`metaReducers` configuration option allows to provide an array of meta-reducers that are **composed from right to left**.
+
+```TypeScript
+// meta-reducers.ts
+import { ActionReducer, MetaReducer } from '@ngrx/store';
+import { reducers } from './reducers';
+
+// console.log all actions
+export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
+  return function(state, action) {
+    console.log('state', state);
+    console.log('action', action);
+
+    return reducer(state, action);
+  }
+}
+
+export const metaReducers: MetaReducer<any>[] = [debug];
+```
+
+```TypeScript
+// app.module.ts
+import { StoreModule } from '@ngrx/store';
+
+import { metaReducers } from './meta-reducers';
+import { reducers } from './reducers';
+
+@NgModule({
+  imports: [
+    StoreModule.forRoot(reducers, { metaReducers })
+  ]
+})
+export class AppModule {}
 ```
