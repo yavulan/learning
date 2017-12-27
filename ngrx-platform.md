@@ -22,7 +22,7 @@
     - [Inside the component](#inside-the-component)
   - [Components categories](#components-categories)
     - [Smart (Container components)](#smart-container-components)
-    - [Dumb (Child components)](#dumb-child-components)
+    - [Dumb (Presentational/Child components)](#dumb-presentationalchild-components)
       - [Performance](#performance)
   - [Selectors](#selectors)
     - [Interface](#interface-2)
@@ -86,6 +86,11 @@ class Store<State> extends Rx.BehaviorSubject<State> {
 
 ## Core concepts
 
+One-way dataflow:
+`Component → Action → Reducer → State → Component.`
+
+Store is immutable (all changes produces new objects).
+
 Each application built around store contain three main pieces:
 
 * Reducers.
@@ -94,10 +99,11 @@ Each application built around store contain three main pieces:
 
 ## Advantages
 
-* Centralized state.
+* Centralized state (single source of truth).
 * Predictable state management (all mutations are explicit).
 * Performant.
 * Testable.
+* Root and feature module support.
 * Tooling is available.
 
 ## Action
@@ -278,10 +284,11 @@ Components in Store application falls into one of two categories: **smart** or *
 * handle view events and the dispatching of actions (through a service or directly);
 * handle the logic behind events emitted up from child components within the same view.
 
-### Dumb (Child components)
+### Dumb (Presentational/Child components)
 
 * generally for presentation only;
 * rely exclusively on `@Input` parameters;
+* invokes callbacks via `@Output`;
 * when relevant events occur in dumb components, they are emitted up to be handled by a parent smart component;
 * make up the majority of your application;
 * should be small, focused, and reusable.
