@@ -24,6 +24,13 @@
     - [Smart (Container components)](#smart-container-components)
     - [Dumb (Child components)](#dumb-child-components)
       - [Performance](#performance)
+  - [Selectors](#selectors)
+    - [Interface](#interface-2)
+    - [Advantages](#advantages-1)
+    - [Example](#example-2)
+    - [Functions](#functions)
+      - [createSelector](#createselector)
+      - [createFeatureSelector](#createfeatureselector)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -109,8 +116,8 @@ interface Action {
 
 ### Example
 
-`example.actions.ts`
 ```TypeScript
+// example.actions.ts
 import { Action } from '@ngrx/store';
 
 // Actions values has to be unique and easily readable.
@@ -159,8 +166,8 @@ interface Reducer<State> {
 
 ### Example
 
-`example.reducer.ts`
 ```TypeScript
+// example.reducer.ts
 import * as ExampleActions from './example.actions';
 
 export interface State {
@@ -200,8 +207,8 @@ This pipe also handles unsubscribing (no need to manually cleaning up subscripti
 
 ### Reducers index
 
-`reducers/index.ts`
 ```TypeScript
+// reducers/index.ts
 import { ActionReducerMap } from '@ngrx/store';
 
 import * as fromExample1 from './example1.reducer';
@@ -285,3 +292,75 @@ it is possible to tell Angular to skip running change detection
 (until there is a change in input references) to provide performance benefit.
 
 To enable this utilize the `changeDetectionStrategy` of `OnPush`.
+
+## Selectors
+
+**Selectors** - methods used for obtaining slices of store state.
+
+### Interface
+
+```TypeScript
+interface Selector<AppState, SelectedState> {
+    (state: AppState): SelectedState;
+}
+```
+
+### Advantages
+
+* reducing responsibility of components;
+* can be shared across the entire app.
+
+### Example
+
+```TypeScript
+// reducers.ts
+export function selectResults(state: State) {
+    return state.namespace.resultsKey;
+}
+```
+
+Inside component:
+
+```TypeScript
+import * as fromRoot from './reducers';
+
+this.store.select(fromRoot.selectResults)
+```
+
+### Functions
+
+When using the `createSelector` and `createFeatureSelector` functions @ngrx/store keeps track of the latest arguments in which your selector function was invoked.
+
+Because selectors are pure functions, the last result can be returned when the arguments match without reinvoking selector function.
+This can provide performance benefits (memoization).
+
+#### createSelector
+Returns a callback function for selecting a slice of state.
+
+```TypeScript
+// reducers.ts
+import { createSelector } from '@ngrx/store';
+
+export interface FeatureState {
+  counter: number;
+}
+
+export interface AppState {
+  feature: FeatureState
+}
+
+export const selectFeature = (state: AppState) => state.feature;
+export const selectFeatureCount = createSelector(selectFeature, (state: FeatureState) => state.counter);
+```
+
+#### createFeatureSelector
+Is a convenience method for returning a top level feature state.
+Returns a typed selector function for a feature slice of state.
+
+```TypeScript
+// reducers.ts
+
+// export const selectFeature = (state: AppState) => state.feature;
+// becomes
+export const selectFeature = createFeatureSelector<FeatureState>('feature');
+```
