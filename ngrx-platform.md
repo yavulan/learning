@@ -6,10 +6,15 @@
   - [Introduction](#introduction)
   - [Behind the scenes](#behind-the-scenes)
   - [Core concepts](#core-concepts)
+    - [Three main pieces](#three-main-pieces)
+    - [Immutability](#immutability)
+    - [One-way dataflow](#one-way-dataflow)
   - [Advantages](#advantages)
   - [Action](#action)
     - [Interface](#interface)
     - [Example](#example)
+      - [Simple](#simple)
+      - [Complex](#complex)
   - [Reducer](#reducer)
     - [Pure function](#pure-function)
     - [Interface](#interface-1)
@@ -86,25 +91,29 @@ class Store<State> extends Rx.BehaviorSubject<State> {
 
 ## Core concepts
 
-One-way dataflow:
-`Component → Action → Reducer → State → Component.`
-
-Store is immutable (all changes produces new objects).
+### Three main pieces
 
 Each application built around store contain three main pieces:
 
-* Reducers.
 * Actions.
+* Reducers.
 * Single application store.
+
+### Immutability
+
+Store is **immutable (all changes produce new objects)**.
+
+### One-way dataflow
+
+![](assets/ngrx-platform-dataflow.png)
 
 ## Advantages
 
-* Centralized state (single source of truth).
+* Centralized state (**single source of truth**).
 * Predictable state management (all mutations are explicit).
 * Performant.
 * Testable.
 * Root and feature module support.
-* Tooling is available.
 
 ## Action
 
@@ -121,15 +130,24 @@ interface Action {
 }
 ```
 
+*Note: `payload?: any;` allowed to be named differently.*
+
 ### Example
 
+#### Simple
+
 ```TypeScript
-// example.actions.ts
+// example.action.ts
 import { Action } from '@ngrx/store';
 
+// --- 1. Create string const for action. ---
+
 // Actions values has to be unique and easily readable.
-// Using namespace, e.g. `[Movie] Add`, might be a good idea.
+// So using namespace, e.g. `[Movie] Add`, might be a good idea.
+// Tip: you can use current module name for namsespace.
 export const UPDATE = '[Person] Update';
+
+// --- 2. Create class for action. ---
 
 // Usage of classes is determined by unlocking TypeScript's compile-time checking
 // and triggering IDE autocompletion.
@@ -139,10 +157,71 @@ export class Update implements Action {
   constructor(public payload: string) {}
 }
 
-export type All
+// --- 3. Export all actions. ---
+
+export type ExampleAction
   = Update;
   // | AnotherAction
   // | AnotherAction...
+```
+
+#### Complex
+
+```TypeScript
+// customers.action.ts
+import { Action } from '@ngrx/store';
+
+// Loading customers.
+export const LOAD_CUSTOMERS = '[Users] Load Customers';
+export const LOAD_CUSTOMERS_FAIL = '[Users] Load Customers Fail';
+export const LOAD_CUSTOMERS_SUCCESS = '[Users] Load Customers Success';
+
+export class LoadCustomers implements Action {
+  readonly type = LOAD_CUSTOMERS;
+}
+
+export class LoadCustomersFail implements Action {
+  readonly type = LOAD_CUSTOMERS_FAIL;
+
+  constructor(public payload: any) {}
+}
+
+export class LoadCustomersSuccess implements Action {
+  readonly type = LOAD_CUSTOMERS_SUCCESS;
+
+  constructor(public payload: Customer[]) {}
+}
+
+// Creating customers.
+export const CREATE_CUSTOMER = '[Users] Create Customer';
+export const CREATE_CUSTOMER_FAIL = '[Users] Create Customer Fail';
+export const CREATE_CUSTOMER_SUCCESS = '[Users] Create Customer Success';
+
+export class CreateCustomer implements Action {
+  readonly type = CREATE_CUSTOMER;
+
+  constructor(public payload: Customer) {}
+}
+
+export class CreateCustomerFail implements Action {
+  readonly type = CREATE_CUSTOMER_FAIL;
+
+  constructor(public payload: any) {}
+}
+
+export class CreateCustomerSuccess implements Action {
+  readonly type = CREATE_CUSTOMER_SUCCESS;
+
+  constructor(public payload: Customer) {}
+}
+
+// ...Other CRUD actions.
+
+// Exporting all actions.
+export type CustomersAction
+  = LoadCustomers | LoadCustomersFail | LoadCustomersSuccess
+  | CreateCustomer | CreateCustomerFail | CreateCustomerSuccess
+  ;
 ```
 
 ## Reducer
@@ -300,6 +379,8 @@ it is possible to tell Angular to skip running change detection
 (until there is a change in input references) to provide performance benefit.
 
 To enable this utilize the `changeDetectionStrategy` of `OnPush`.
+
+*Note: It can be used on container components too (if component relies only on observables).*
 
 ## Selectors
 
