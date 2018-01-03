@@ -20,6 +20,8 @@
     - [Interface](#interface-1)
     - [Rules to follow](#rules-to-follow)
     - [Example](#example-1)
+      - [Simple](#simple-1)
+      - [Complex](#complex-1)
   - [AsyncPipe](#asyncpipe)
   - [Examples](#examples)
     - [Reducers index](#reducers-index)
@@ -252,23 +254,28 @@ interface Reducer<State> {
 
 ### Example
 
+#### Simple
+
 ```TypeScript
 // example.reducer.ts
-import * as ExampleActions from './example.actions';
 
-export interface State {
+// --- 1. Import corresponding actions. ---
+import * as fromExample from './example.actions';
+
+// --- 2. Create interface of current part of state. ---
+export interface ExampleState {
   name: string;
 }
 
-const initialState: State = {
+// --- 3. Create initial state. ---
+const initialState: ExampleState = {
   name: ''
 };
 
-export type Action = ExampleActions.All;
-
-export function reducer(state = initialState, action: Action): State {
+// --- 4. Create reducer. ---
+export function reducer(state: ExampleState = initialState, action: fromExample.ExampleAction): ExampleState {
   switch (action.type) {
-    case ExampleActions.UPDATE: {
+    case fromExample.UPDATE: {
       return {name: action.payload};
     }
 
@@ -277,6 +284,100 @@ export function reducer(state = initialState, action: Action): State {
     }
   }
 }
+
+// --- 5. Create selectors for each property in interface. ---
+export const getUserName = (state: ExampleState) => state.name;
+```
+
+#### Complex
+
+```TypeScript
+// customers.reducer.ts
+import * as fromCustomers from '../actions/customers.actions';
+import { Customer } from '../../models/customer.model';
+
+export interface CustomerState {
+  entities: { [id: number]: Customer };
+  loaded: boolean;
+  loading: boolean;
+}
+
+export const initialState: CustomerState = {
+  entities: {},
+  loaded: false,
+  loading: false,
+};
+
+export function reducer(state: CustomerState = initialState, action: fromCustomers.CustomersAction): CustomerState {
+  switch (action.type) {
+    case fromCustomers.LOAD_CUSTOMERS: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+
+    case fromCustomers.LOAD_CUSTOMERS_SUCCESS: {
+      const customers = action.payload;
+
+      const entities = customers.reduce((allEntities: { [id: number]: Customer }, customer: Customer) => {
+        return {
+          ...allEntities,
+          [customer.id]: customer,
+        };
+      }, {...state.entities});
+
+      return {
+        ...state,
+        loaded: true,
+        loading: false,
+        entities,
+      };
+    }
+
+    case fromCustomers.LOAD_CUSTOMERS_FAIL: {
+      return {
+        ...state,
+        loaded: false,
+        loading: false,
+      };
+    }
+
+    case fromCustomers.CREATE_CUSTOMER_SUCCESS:
+    case fromCustomers.UPDATE_CUSTOMER_SUCCESS: {
+      const customer = action.payload;
+      const entities = {
+        ...state.entities,
+        [customer.id]: customer,
+      };
+
+      return {
+        ...state,
+        entities,
+      };
+    }
+
+    case fromCustomers.REMOVE_CUSTOMER_SUCCESS: {
+      const customer = action.payload;
+
+      // Desctucturing to remove customer.
+      const {[customer.id]: removed, ...entities} = state.entities;
+
+      return {
+        ...state,
+        entities,
+      };
+    }
+
+    default: {
+        return state;
+    }
+  }
+}
+
+export const getCustomersEntities = (state: CustomerState) => state.entities;
+export const getCustomersLoaded = (state: CustomerState) => state.loaded;
+export const getCustomersLoading = (state: CustomerState) => state.loading;
 ```
 
 ## AsyncPipe
