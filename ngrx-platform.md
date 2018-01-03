@@ -4,12 +4,12 @@
 
 - [@ngrx/store](#ngrxstore)
   - [Introduction](#introduction)
-  - [Behind the scenes](#behind-the-scenes)
-  - [Core concepts](#core-concepts)
-    - [Three main pieces](#three-main-pieces)
-    - [Immutability](#immutability)
-    - [One-way dataflow](#one-way-dataflow)
-  - [Advantages](#advantages)
+    - [Behind the scenes](#behind-the-scenes)
+    - [Core concepts](#core-concepts)
+      - [Three main pieces](#three-main-pieces)
+      - [Immutability](#immutability)
+      - [One-way dataflow](#one-way-dataflow)
+    - [Advantages](#advantages)
   - [Action](#action)
     - [Interface](#interface)
     - [Example](#example)
@@ -22,7 +22,13 @@
     - [Example](#example-1)
       - [Simple](#simple-1)
       - [Complex](#complex-1)
-  - [AsyncPipe](#asyncpipe)
+  - [Selectors](#selectors)
+    - [Interface](#interface-2)
+    - [Advantages](#advantages-1)
+    - [Example](#example-2)
+    - [Functions](#functions)
+      - [createSelector](#createselector)
+      - [createFeatureSelector](#createfeatureselector)
   - [Examples](#examples)
     - [Reducers index](#reducers-index)
     - [Inside the app.module](#inside-the-appmodule)
@@ -31,13 +37,7 @@
     - [Smart (Container components)](#smart-container-components)
     - [Dumb (Presentational/Child components)](#dumb-presentationalchild-components)
       - [Performance](#performance)
-  - [Selectors](#selectors)
-    - [Interface](#interface-2)
-    - [Advantages](#advantages-1)
-    - [Example](#example-2)
-    - [Functions](#functions)
-      - [createSelector](#createselector)
-      - [createFeatureSelector](#createfeatureselector)
+  - [AsyncPipe](#asyncpipe)
   - [Meta Reducers](#meta-reducers)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -54,7 +54,7 @@ Store can be thought of as a `client-side ‘single source of truth’`, or a `c
 
 A snapshot of store at any point supply a complete representation of the relevant application state.
 
-## Behind the scenes
+### Behind the scenes
 
 **Just to give an idea, it's not a real implementation!**
 
@@ -91,9 +91,9 @@ class Store<State> extends Rx.BehaviorSubject<State> {
 }
 ```
 
-## Core concepts
+### Core concepts
 
-### Three main pieces
+#### Three main pieces
 
 Each application built around store contain three main pieces:
 
@@ -101,15 +101,15 @@ Each application built around store contain three main pieces:
 * Reducers.
 * Single application store.
 
-### Immutability
+#### Immutability
 
 Store is **immutable (all changes produce new objects)**.
 
-### One-way dataflow
+#### One-way dataflow
 
 ![](assets/ngrx-platform-dataflow.png)
 
-## Advantages
+### Advantages
 
 * Centralized state (**single source of truth**).
 * Predictable state management (all mutations are explicit).
@@ -380,15 +380,77 @@ export const getCustomersLoaded = (state: CustomerState) => state.loaded;
 export const getCustomersLoading = (state: CustomerState) => state.loading;
 ```
 
-## AsyncPipe
+## Selectors
 
-The **AsyncPipe** can handle `Observables` and `Promises` in template.
+**Selectors** - methods used for obtaining slices of store state.
 
-```HTML
-{{ stream$ | async }}
+### Interface
+
+```TypeScript
+interface Selector<AppState, SelectedState> {
+    (state: AppState): SelectedState;
+}
 ```
 
-This pipe also handles unsubscribing (no need to manually cleaning up subscriptions on destroy).
+### Advantages
+
+* reducing responsibility of components;
+* can be shared across the entire app.
+
+### Example
+
+```TypeScript
+// reducers.ts
+export function selectResults(state: State) {
+    return state.namespace.resultsKey;
+}
+```
+
+Inside component:
+
+```TypeScript
+import * as fromRoot from './reducers';
+
+this.store.select(fromRoot.selectResults)
+```
+
+### Functions
+
+When using the `createSelector` and `createFeatureSelector` functions @ngrx/store keeps track of the latest arguments in which your selector function was invoked.
+
+Because selectors are pure functions, the last result can be returned when the arguments match without reinvoking selector function.
+This can provide performance benefits (memoization).
+
+#### createSelector
+Returns a callback function for selecting a slice of state.
+
+```TypeScript
+// reducers.ts
+import { createSelector } from '@ngrx/store';
+
+export interface FeatureState {
+  counter: number;
+}
+
+export interface AppState {
+  feature: FeatureState
+}
+
+export const selectFeature = (state: AppState) => state.feature;
+export const selectFeatureCount = createSelector(selectFeature, (state: FeatureState) => state.counter);
+```
+
+#### createFeatureSelector
+Is a convenience method for returning a top level feature state.
+Returns a typed selector function for a feature slice of state.
+
+```TypeScript
+// reducers.ts
+
+// export const selectFeature = (state: AppState) => state.feature;
+// becomes
+export const selectFeature = createFeatureSelector<FeatureState>('feature');
+```
 
 ## Examples
 
@@ -483,77 +545,16 @@ To enable this utilize the `changeDetectionStrategy` of `OnPush`.
 
 *Note: It can be used on container components too (if component relies only on observables).*
 
-## Selectors
+## AsyncPipe
 
-**Selectors** - methods used for obtaining slices of store state.
+The **AsyncPipe** can handle `Observables` and `Promises` in template.
 
-### Interface
-
-```TypeScript
-interface Selector<AppState, SelectedState> {
-    (state: AppState): SelectedState;
-}
+```HTML
+{{ stream$ | async }}
 ```
 
-### Advantages
+This pipe also handles unsubscribing (no need to manually cleaning up subscriptions on destroy).
 
-* reducing responsibility of components;
-* can be shared across the entire app.
-
-### Example
-
-```TypeScript
-// reducers.ts
-export function selectResults(state: State) {
-    return state.namespace.resultsKey;
-}
-```
-
-Inside component:
-
-```TypeScript
-import * as fromRoot from './reducers';
-
-this.store.select(fromRoot.selectResults)
-```
-
-### Functions
-
-When using the `createSelector` and `createFeatureSelector` functions @ngrx/store keeps track of the latest arguments in which your selector function was invoked.
-
-Because selectors are pure functions, the last result can be returned when the arguments match without reinvoking selector function.
-This can provide performance benefits (memoization).
-
-#### createSelector
-Returns a callback function for selecting a slice of state.
-
-```TypeScript
-// reducers.ts
-import { createSelector } from '@ngrx/store';
-
-export interface FeatureState {
-  counter: number;
-}
-
-export interface AppState {
-  feature: FeatureState
-}
-
-export const selectFeature = (state: AppState) => state.feature;
-export const selectFeatureCount = createSelector(selectFeature, (state: FeatureState) => state.counter);
-```
-
-#### createFeatureSelector
-Is a convenience method for returning a top level feature state.
-Returns a typed selector function for a feature slice of state.
-
-```TypeScript
-// reducers.ts
-
-// export const selectFeature = (state: AppState) => state.feature;
-// becomes
-export const selectFeature = createFeatureSelector<FeatureState>('feature');
-```
 
 ## Meta Reducers
 
