@@ -50,6 +50,14 @@
       - [Performance](#performance)
   - [AsyncPipe](#asyncpipe)
   - [Meta Reducers](#meta-reducers)
+- [@ngrx/effects](#ngrxeffects)
+  - [API](#api)
+    - [Actions](#actions)
+      - [Interface](#interface-3)
+    - [@Effect](#effect)
+      - [Non-dispatching effect](#non-dispatching-effect)
+      - [Example](#example-2)
+    - [Inside module](#inside-module-2)
 - [@ngrx/store-devtools](#ngrxstore-devtools)
 - [Resources](#resources)
 
@@ -714,6 +722,132 @@ import { reducers } from './reducers';
 })
 export class AppModule {}
 ```
+
+# @ngrx/effects
+
+Manages **side effects** - code that interacts with the outside world (HTTP, web sockets, offline storage, etc.).
+
+Main point is to **listen to @ngrx/store action and return a new action**.
+
+Isolates side effect from components, so components becomes easier to test.
+
+![](assets/ngrx-platform-effects.png)
+
+## API
+
+### Actions
+
+`Actions` is an Observable to inject in a constructor.
+
+```TypeScript
+import { Actions } from '@ngrx/effects';
+
+constructor(private actions$: Actions) { }
+```
+
+#### Interface
+
+```TypeScript
+class Actions extends Observable<Action> {
+  ofType(type: string): Observable<Action>;
+}
+```
+
+### @Effect
+
+`@Effect` is a decorator to hint @ngrx/effects that we want to subscribe to some properties.
+
+#### Non-dispatching effect
+
+When there is no need to dispatch a new action from the effect:
+
+```TypeScript
+@Effect({dispatch: false})
+```
+
+#### Example
+
+```TypeScript
+// customers.effects.ts
+import { Injectable } from '@angular/core';
+import { Actions, Effect } from '@ngrx/effects';
+import { map, switchMap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
+
+import * as fromRoot from '../../../store';
+import * as fromServices from '../../services';
+import * as customerActions from '../actions/customers.action';
+
+@Injectable()
+export class CustomersEffects {
+  constructor(private actions$: Actions, private customersService: fromServices.CustomersService) {
+  }
+
+  @Effect()
+  loadCustomers$ = this.actions$.ofType<customerActions.LoadCustomers>(customerActions.LOAD_CUSTOMERS).pipe(
+    switchMap(() => {
+      return this.customersService.getCustomers().pipe(
+        map(customers => new customerActions.LoadCustomersSuccess(customers)),
+        catchError(error => of(new customerActions.LoadCustomersFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  createCustomer$ = this.actions$.ofType<customerActions.CreateCustomer>(customerActions.CREATE_CUSTOMER).pipe(
+    map(action => action.payload),
+    switchMap(customer => {
+      return this.customersService.createCustomer(customer).pipe(
+        map(createdCustomer => new customerActions.CreateCustomerSuccess(createdCustomer)),
+        catchError(error => of(new customerActions.CreateCustomerFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  createCustomerSuccess$ = this.actions$.ofType<customerActions.CreateCustomerSuccess>(customerActions.CREATE_CUSTOMER_SUCCESS).pipe(
+    map(action => action.payload),
+    map(customer => new fromRoot.Go({
+      path: ['/users', customer.id]
+    })),
+  );
+
+  @Effect()
+  updateCustomer$ = this.actions$.ofType<customerActions.UpdateCustomer>(customerActions.UPDATE_CUSTOMER).pipe(
+    map(action => action.payload),
+    switchMap(customer => {
+      return this.customersService.updateCustomer(customer).pipe(
+        map(updatedCustomer => new customerActions.UpdateCustomerSuccess(updatedCustomer)),
+        catchError(error => of(new customerActions.UpdateCustomerFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  removeCustomer$ = this.actions$.ofType<customerActions.RemoveCustomer>(customerActions.REMOVE_CUSTOMER).pipe(
+    map(action => action.payload),
+    switchMap(customer => {
+      return this.customersService.removeCustomer(customer).pipe(
+        map(() => new customerActions.RemoveCustomerSuccess(customer)),
+        catchError(error => of(new customerActions.RemoveCustomerFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  handleCustomerSuccess$ = this.actions$
+    .ofType<customerActions.RemoveCustomerSuccess | customerActions.UpdateCustomerSuccess>
+    (customerActions.REMOVE_CUSTOMER_SUCCESS, customerActions.UPDATE_CUSTOMER_SUCCESS)
+    .pipe(
+      map(customer => new fromRoot.Go({
+        path: ['/users'],
+      }))
+    );
+}
+```
+
+### Inside module
+[Inside module](#inside-module)
 
 # @ngrx/store-devtools
 
