@@ -39,6 +39,7 @@
       - [Performance](#performance)
   - [AsyncPipe](#asyncpipe)
   - [Meta Reducers](#meta-reducers)
+- [Resources](#resources)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -57,8 +58,6 @@ A snapshot of store at any point supply a complete representation of the relevan
 ### Behind the scenes
 
 **Just to give an idea, it's not a real implementation!**
-
-*Credits to [btroncone](https://gist.github.com/btroncone/a6e4347326749f938510).*
 
 ```TypeScript
 class Dispatcher extends Rx.Subject {
@@ -515,8 +514,6 @@ export class ExampleComponent {
 
 ## Components categories
 
-*Credits to [btroncone](https://gist.github.com/btroncone/a6e4347326749f938510).*
-
 Components in Store application falls into one of two categories: **smart** or **dumb**.
 
 ### Smart (Container components)
@@ -594,3 +591,11 @@ import { reducers } from './reducers';
 })
 export class AppModule {}
 ```
+
+# Resources
+
+* [NGRX Course: Store + Effects](https://ultimateangular.com/ngrx-store-effects) by @toddmotto.
+* [Comprehensive Introduction to @ngrx/store](https://gist.github.com/btroncone/a6e4347326749f938510) by @btroncone.
+* [Documentation for @ngrx/platform](https://github.com/ngrx/platform/tree/master/docs) by [contributors](https://github.com/ngrx/platform/graphs/contributors).
+* [From Inactive to Reactive with ngrx](https://www.youtube.com/watch?v=cyaAhXHhxgk) by @brandonroberts and @MikeRyanDev
+* [Reactive Angular2 with ngRx](https://www.youtube.com/watch?v=mhA7zZ23Odw) by @robwormald
