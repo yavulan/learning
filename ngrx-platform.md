@@ -1158,3 +1158,10 @@ export class AppModule { }
 * [From Inactive to Reactive with ngrx](https://www.youtube.com/watch?v=cyaAhXHhxgk) by [@brandonroberts](https://github.com/brandonroberts) and [@MikeRyanDev](https://github.com/MikeRyanDev).
 * [Reactive Angular2 with ngRx](https://www.youtube.com/watch?v=mhA7zZ23Odw) by [@robwormald](https://github.com/robwormald).
 * ($) [Build Redux Style Applications with Angular, RxJS, and ngrx/store](https://egghead.io/courses/build-redux-style-applications-with-angular-rxjs-and-ngrx-store) by [@johnlindquist](https://github.com/johnlindquist).
+
+# Look for more
+
+* [Redux docs](https://github.com/reactjs/redux/tree/master/docs)
+* https://redux.js.org/
+* [Awesome Angular](https://github.com/gdi2290/awesome-angular#ngrx)
+* [Awesome Redux](https://github.com/xgrommx/awesome-redux)
