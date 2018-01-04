@@ -67,6 +67,12 @@
     - [app.module.ts](#appmodulets)
   - [Examples](#examples-2)
     - [Dispatching an action](#dispatching-an-action)
+- [Check Store](#check-store)
+  - [Example](#example-3)
+    - [Guard file](#guard-file)
+    - [guards/index.ts](#guardsindexts)
+    - [some.module.ts](#somemodulets)
+    - [some-routing.module.ts](#some-routingmodulets)
 - [@ngrx/store-devtools](#ngrxstore-devtools)
 - [Resources](#resources)
 
@@ -1020,6 +1026,110 @@ export class AppModule { }
         path: ['/users'],
       }))
     );
+```
+
+# Check Store
+
+To ensure that required Store keys is available on a current route (even if page was refreshed) we can use Angular Route Guards.
+
+## Example
+
+### Guard file
+
+```TypeScript
+// customer-exists.guard.ts
+import { Injectable } from '@angular/core';
+import { CanActivate, ActivatedRouteSnapshot } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { filter, take, tap, map, switchMap } from 'rxjs/operators';
+
+import { Customer } from '../models/customer.model';
+
+import * as fromStore from '../store';
+
+@Injectable()
+export class CustomerExistsGuard implements CanActivate {
+  constructor(private store: Store<fromStore.UsersState>) {
+  }
+
+  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
+    return this.checkStore().pipe(
+      switchMap(() => {
+        const id = parseInt(route.params.customerId, 10);
+        return this.hasCustomer(id);
+      }),
+    );
+  }
+
+  hasCustomer(id: number): Observable<boolean> {
+    return this.store.select(fromStore.getCustomersEntities).pipe(
+      map((entities: { [key: number]: Customer }) => Boolean(entities[id])),
+      // Unsubscribe automatically.
+      take(1)
+    );
+  }
+
+  // Method is similar across all Store-dealing guards.
+  checkStore(): Observable<boolean> {
+    return this.store.select(fromStore.getCustomersLoaded).pipe(
+      tap(loaded => {
+        if (!loaded) {
+          this.store.dispatch(new fromStore.LoadCustomers());
+        }
+      }),
+      // Waits for loaded become true.
+      filter((loaded: boolean) => loaded),
+      // Unsubscribe automatically when loaded.
+      take(1)
+    );
+  }
+}
+```
+
+### guards/index.ts
+
+```TypeScript
+import { SomeGuard } from './each.guard';
+
+export const guards: any[] = [
+  SomeGuard,
+  // ...
+];
+
+export * from './each.guard';
+```
+
+### some.module.ts
+
+```TypeScript
+import { NgModule } from '@angular/core';
+
+// services
+import * as fromServices from './services';
+
+// guards
+import * as fromGuards from './guards';
+
+@NgModule({
+  providers: [...fromServices.services, ...fromGuards.guards],
+})
+export class SomeModule { }
+```
+
+### some-routing.module.ts
+
+```TypeScript
+// guards
+import * as fromGuards from './guards';
+
+// routes
+export const ROUTES: Routes = [
+  {
+    path: '',
+    canActivate: [fromGuards.SomeGuard],
+    component: fromContainers.SomeComponent,
+  },
 ```
 
 # @ngrx/store-devtools
