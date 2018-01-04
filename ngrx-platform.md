@@ -760,12 +760,10 @@ import { Actions } from '@ngrx/effects';
 constructor(private actions$: Actions) { }
 ```
 
-#### Interface
+### ofType
 
 ```TypeScript
-class Actions extends Observable<Action> {
-  ofType(type: string): Observable<Action>;
-}
+export declare function ofType<T extends Action>(...allowedTypes: string[]): (source$: Actions<T>) => Actions<T>;
 ```
 
 ### @Effect
@@ -785,7 +783,7 @@ When there is no need to dispatch a new action from the effect:
 ```TypeScript
 // customers.effects.ts
 import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 
@@ -795,11 +793,13 @@ import * as customerActions from '../actions/customers.action';
 
 @Injectable()
 export class CustomersEffects {
-  constructor(private actions$: Actions, private customersService: fromServices.CustomersService) {
+  constructor(private actions$: Actions,
+              private customersService: fromServices.CustomersService) {
   }
 
   @Effect()
-  loadCustomers$ = this.actions$.ofType<customerActions.LoadCustomers>(customerActions.LOAD_CUSTOMERS).pipe(
+  loadCustomers$ = this.actions$.pipe(
+    ofType<customerActions.LoadCustomers>(customerActions.LOAD_CUSTOMERS),
     switchMap(() => {
       return this.customersService.getCustomers().pipe(
         map(customers => new customerActions.LoadCustomersSuccess(customers)),
@@ -809,7 +809,8 @@ export class CustomersEffects {
   );
 
   @Effect()
-  createCustomer$ = this.actions$.ofType<customerActions.CreateCustomer>(customerActions.CREATE_CUSTOMER).pipe(
+  createCustomer$ = this.actions$.pipe(
+    ofType<customerActions.CreateCustomer>(customerActions.CREATE_CUSTOMER),
     map(action => action.payload),
     switchMap(customer => {
       return this.customersService.createCustomer(customer).pipe(
@@ -820,7 +821,8 @@ export class CustomersEffects {
   );
 
   @Effect()
-  createCustomerSuccess$ = this.actions$.ofType<customerActions.CreateCustomerSuccess>(customerActions.CREATE_CUSTOMER_SUCCESS).pipe(
+  createCustomerSuccess$ = this.actions$.pipe(
+    ofType<customerActions.CreateCustomerSuccess>(customerActions.CREATE_CUSTOMER_SUCCESS),
     map(action => action.payload),
     map(customer => new fromRoot.Go({
       path: ['/users', customer.id]
@@ -828,7 +830,8 @@ export class CustomersEffects {
   );
 
   @Effect()
-  updateCustomer$ = this.actions$.ofType<customerActions.UpdateCustomer>(customerActions.UPDATE_CUSTOMER).pipe(
+  updateCustomer$ = this.actions$.pipe(
+    ofType<customerActions.UpdateCustomer>(customerActions.UPDATE_CUSTOMER),
     map(action => action.payload),
     switchMap(customer => {
       return this.customersService.updateCustomer(customer).pipe(
@@ -839,7 +842,8 @@ export class CustomersEffects {
   );
 
   @Effect()
-  removeCustomer$ = this.actions$.ofType<customerActions.RemoveCustomer>(customerActions.REMOVE_CUSTOMER).pipe(
+  removeCustomer$ = this.actions$.pipe(
+    ofType<customerActions.RemoveCustomer>(customerActions.REMOVE_CUSTOMER),
     map(action => action.payload),
     switchMap(customer => {
       return this.customersService.removeCustomer(customer).pipe(
@@ -850,14 +854,13 @@ export class CustomersEffects {
   );
 
   @Effect()
-  handleCustomerSuccess$ = this.actions$
-    .ofType<customerActions.RemoveCustomerSuccess | customerActions.UpdateCustomerSuccess>
-    (customerActions.REMOVE_CUSTOMER_SUCCESS, customerActions.UPDATE_CUSTOMER_SUCCESS)
-    .pipe(
-      map(customer => new fromRoot.Go({
-        path: ['/users'],
-      }))
-    );
+  handleCustomerSuccess$ = this.actions$.pipe(
+    ofType<customerActions.RemoveCustomerSuccess | customerActions.UpdateCustomerSuccess>
+    (customerActions.REMOVE_CUSTOMER_SUCCESS, customerActions.UPDATE_CUSTOMER_SUCCESS),
+    map(customer => new fromRoot.Go({
+      path: ['/users'],
+    }))
+  );
 }
 ```
 
@@ -1019,12 +1022,11 @@ export class AppModule { }
 
 ```TypeScript
 @Effect()
-  handleCustomerSuccess$ = this.actions$
-    .ofType<customerActions.RemoveCustomerSuccess>(customerActions.REMOVE_CUSTOMER_SUCCESS)
-    .pipe(
-      map(customer => new fromRoot.Go({
-        path: ['/users'],
-      }))
+  handleCustomerSuccess$ = this.actions$.pipe(
+    ofType<customerActions.RemoveCustomerSuccess>(customerActions.REMOVE_CUSTOMER_SUCCESS),
+    map(customer => new fromRoot.Go({
+      path: ['/users'],
+    }))
     );
 ```
 
