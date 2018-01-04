@@ -25,11 +25,13 @@
   - [Selectors](#selectors)
     - [Interface](#interface-2)
     - [Advantages](#advantages-1)
-    - [Example](#example-2)
     - [Functions](#functions)
-      - [createSelector](#createselector)
       - [createFeatureSelector](#createfeatureselector)
-  - [Examples](#examples)
+      - [createSelector](#createselector)
+    - [Examples](#examples)
+      - [Selector file](#selector-file)
+      - [Inside component](#inside-component)
+  - [Examples](#examples-1)
     - [Reducers index](#reducers-index)
     - [Inside the app.module](#inside-the-appmodule)
     - [Inside the component](#inside-the-component)
@@ -342,6 +344,7 @@ export function reducer(state: CustomerState = initialState, action: fromCustome
       };
     }
 
+    // One of `switch`'s benefits is preventing duplication.
     case fromCustomers.CREATE_CUSTOMER_SUCCESS:
     case fromCustomers.UPDATE_CUSTOMER_SUCCESS: {
       const customer = action.payload;
@@ -396,23 +399,6 @@ interface Selector<AppState, SelectedState> {
 * reducing responsibility of components;
 * can be shared across the entire app.
 
-### Example
-
-```TypeScript
-// reducers.ts
-export function selectResults(state: State) {
-    return state.namespace.resultsKey;
-}
-```
-
-Inside component:
-
-```TypeScript
-import * as fromRoot from './reducers';
-
-this.store.select(fromRoot.selectResults)
-```
-
 ### Functions
 
 When using the `createSelector` and `createFeatureSelector` functions @ngrx/store keeps track of the latest arguments in which your selector function was invoked.
@@ -420,35 +406,91 @@ When using the `createSelector` and `createFeatureSelector` functions @ngrx/stor
 Because selectors are pure functions, the last result can be returned when the arguments match without reinvoking selector function.
 This can provide performance benefits (memoization).
 
+#### createFeatureSelector
+
+Is a convenience method for returning a top level feature state.
+Returns a typed selector function for a feature slice of state.
+
+```TypeScript
+// store/reducers/index.ts
+import { createFeatureSelector } from '@ngrx/store';
+
+export const getUsersState = createFeatureSelector<UsersState>('users');
+```
+
+```TypeScript
+// users.module.ts
+@NgModule({
+  imports: [
+    StoreModule.forFeature('users', reducers),
+  ],
+})
+```
+
 #### createSelector
+
 Returns a callback function for selecting a slice of state.
 
 ```TypeScript
-// reducers.ts
-import { createSelector } from '@ngrx/store';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 export interface FeatureState {
   counter: number;
 }
 
-export interface AppState {
-  feature: FeatureState
-}
-
-export const selectFeature = (state: AppState) => state.feature;
+export const selectFeature = createFeatureSelector<FeatureState>('feature');
 export const selectFeatureCount = createSelector(selectFeature, (state: FeatureState) => state.counter);
 ```
 
-#### createFeatureSelector
-Is a convenience method for returning a top level feature state.
-Returns a typed selector function for a feature slice of state.
+### Examples
+
+#### Selector file
 
 ```TypeScript
-// reducers.ts
+// customers.selector.ts
+import { createSelector } from '@ngrx/store';
+import { Customer } from '../../models/customer.model';
 
-// export const selectFeature = (state: AppState) => state.feature;
-// becomes
-export const selectFeature = createFeatureSelector<FeatureState>('feature');
+import * as fromRoot from '../../../store';
+import * as fromFeature from '../reducers';
+import * as fromCustomers from '../reducers/customers.reducer';
+import * as fromProducts from './products.selectors';
+
+export const getCustomersState = createSelector(fromFeature.getUsersState, (state: fromFeature.UsersState) => state.customers);
+
+export const getCustomersEntities = createSelector(getCustomersState, fromCustomers.getCustomersEntities);
+
+export const getSelectedCustomer = createSelector(getCustomersEntities, fromRoot.getRouterState, (entities, router): Customer => {
+  return router.state && entities[router.state.params.customerId];
+});
+
+export const getAllCustomers = createSelector(getCustomersEntities, (entities) => {
+  return Object.keys(entities).map(id => entities[id]);
+});
+
+export const getCustomersLoaded = createSelector(getCustomersState, fromCustomers.getCustomersLoaded);
+
+export const getCustomersLoading = createSelector(getCustomersState, fromCustomers.getCustomersLoading);
+
+export const getCustomerVisualised = createSelector(
+  getSelectedCustomer,
+  fromProducts.getProductsEntities,
+  fromProducts.getSelectedProducts,
+  (customer, productsEntities, selectedProducts) => {
+    const products = selectedProducts.map(id => productsEntities[id]);
+    return {...customer, products};
+  }
+);
+```
+
+#### Inside component
+
+```TypeScript
+import * as fromStore from '../../store';
+
+ngOnInit() {
+  this.customers$ = this.store.select<Customer[]>(fromStore.getAllCustomers);
+}
 ```
 
 ## Examples
@@ -597,5 +639,6 @@ export class AppModule {}
 * [NGRX Course: Store + Effects](https://ultimateangular.com/ngrx-store-effects) by @toddmotto.
 * [Comprehensive Introduction to @ngrx/store](https://gist.github.com/btroncone/a6e4347326749f938510) by @btroncone.
 * [Documentation for @ngrx/platform](https://github.com/ngrx/platform/tree/master/docs) by [contributors](https://github.com/ngrx/platform/graphs/contributors).
-* [From Inactive to Reactive with ngrx](https://www.youtube.com/watch?v=cyaAhXHhxgk) by @brandonroberts and @MikeRyanDev
-* [Reactive Angular2 with ngRx](https://www.youtube.com/watch?v=mhA7zZ23Odw) by @robwormald
+* [From Inactive to Reactive with ngrx](https://www.youtube.com/watch?v=cyaAhXHhxgk) by @brandonroberts and @MikeRyanDev.
+* [Reactive Angular2 with ngRx](https://www.youtube.com/watch?v=mhA7zZ23Odw) by @robwormald.
+* ($) [Build Redux Style Applications with Angular, RxJS, and ngrx/store](https://egghead.io/courses/build-redux-style-applications-with-angular-rxjs-and-ngrx-store) by @johnlindquist.
