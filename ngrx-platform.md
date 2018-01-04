@@ -10,6 +10,8 @@
       - [Immutability](#immutability)
       - [One-way dataflow](#one-way-dataflow)
     - [Advantages](#advantages)
+    - [Drawbacks](#drawbacks)
+    - [What to store?](#what-to-store)
   - [Action](#action)
     - [Interface](#interface)
     - [Example](#example)
@@ -104,7 +106,7 @@ Each application built around store contain three main pieces:
 
 #### Immutability
 
-Store is **immutable (all changes produce new objects)**.
+Store is **immutable (all changes produce new objects (shallow copies, not deep copies))**.
 
 #### One-way dataflow
 
@@ -112,11 +114,26 @@ Store is **immutable (all changes produce new objects)**.
 
 ### Advantages
 
-* Centralized state (**single source of truth**).
+* Centralized state (**single source of truth**) allows to observe the current data state from anywhere in the app.
+* Isolation of data (data flows one-way).
 * Predictable state management (all mutations are explicit).
-* Performant.
-* Testable.
+* Performant (allows to disable Angular's change detection).
+* Debuggable (time lapse sequence of state changes can be compared one to another).
+* Testable (reducers are pure functions).
 * Root and feature module support.
+
+### Drawbacks
+
+* Learning Curve.
+* Integrating pattern with 3rd party packages can be difficult.
+
+### What to store?
+
+Getting every keyDown() through the store and back to the view is just confusing and unnecessary.
+So transient states should be handled by local components states (such as React's).
+
+>we don’t intend Redux to be used for all state. Just whatever seems significant to the app. I would argue inputs and animation state should be handled by *(state abstraction)*. Redux works better for things like fetched data and locally modified models.
+by @gaearon
 
 ## Action
 
