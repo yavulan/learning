@@ -58,6 +58,15 @@
       - [Non-dispatching effect](#non-dispatching-effect)
       - [Example](#example-2)
     - [Inside module](#inside-module-2)
+- [@ngrx/router-store](#ngrxrouter-store)
+  - [Custom serializer](#custom-serializer)
+  - [Boilerplate](#boilerplate)
+    - [actions/router.actions.ts](#actionsrouteractionsts)
+    - [reducers/index.ts](#reducersindexts)
+    - [effects/router.effects.ts](#effectsroutereffectsts)
+    - [app.module.ts](#appmodulets)
+  - [Examples](#examples-2)
+    - [Dispatching an action](#dispatching-an-action)
 - [@ngrx/store-devtools](#ngrxstore-devtools)
 - [Resources](#resources)
 
@@ -848,6 +857,170 @@ export class CustomersEffects {
 
 ### Inside module
 [Inside module](#inside-module)
+
+# @ngrx/router-store
+
+Binds **Angular Router State** to **Application State (@ngrx/store)**
+, which gives more power to compose the State as a single source of truth.
+
+@ngrx/router-store is listening to Angular routing events and updating store with current route (using custom serializer).
+
+As an additional benefit, we can obliterate Angular `Router` as a DI in the component constructor.
+
+## Custom serializer
+
+Class (usually in `reducers/index.ts`) with `serialize` method to transform Angular `RouterStateSnapshot`
+into a `RouterStateUrl` to bind to the Store.
+
+[Must be provided](#appmodulets).
+
+## Boilerplate
+
+@ngrx/router-store setup is done in root app module.
+
+### actions/router.actions.ts
+
+```TypeScript
+import { Action } from '@ngrx/store';
+import { NavigationExtras } from '@angular/router';
+
+export const GO = '[Router] Go';
+export const BACK = '[Router] Back';
+export const FORWARD = '[Router] Forward';
+
+export class Go implements Action {
+  readonly type = GO;
+  constructor(public payload: {
+    path: any[];
+    query?: object,
+    extras?: NavigationExtras
+  }) {}
+}
+
+export class Back implements Action {
+  readonly type = BACK;
+}
+
+export class Forward implements Action {
+  readonly type = FORWARD;
+}
+
+export type Actions = Go | Back | Forward;
+```
+
+### reducers/index.ts
+
+```TypeScript
+import { ActivatedRouteSnapshot, Params, RouterStateSnapshot } from '@angular/router';
+import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
+
+import * as fromRouter from '@ngrx/router-store';
+
+export interface RouterStateUrl {
+  // Full url.
+  url: string;
+  // `?param=value`
+  queryParams: Params;
+  // `/:id`
+  params: Params;
+}
+
+export interface State {
+  routerReducer: fromRouter.RouterReducerState<RouterStateUrl>;
+}
+
+export const reducers: ActionReducerMap<State> = {
+  routerReducer: fromRouter.routerReducer
+};
+
+export const getRouterState = createFeatureSelector<fromRouter.RouterReducerState<RouterStateUrl>>('routerReducer');
+
+export class CustomSerializer implements fromRouter.RouterStateSerializer<RouterStateUrl> {
+  serialize(routerState: RouterStateSnapshot): RouterStateUrl {
+    // ES6 syntax for `const url = routerState.url;`
+    const {url} = routerState;
+
+    const {queryParams} = routerState.root;
+
+    let state: ActivatedRouteSnapshot = routerState.root;
+    while (state.firstChild) {
+      state = state.firstChild;
+    }
+    const {params} = state;
+
+    return {url, queryParams, params};
+  }
+}
+```
+
+### effects/router.effects.ts
+
+```TypeScript
+import { Injectable} from '@angular/core';
+import { Actions, Effect } from '@ngrx/effects';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { map, tap } from 'rxjs/operators';
+
+import * as RouterActions from '../actions/router.action';
+
+@Injectable()
+export class RouterEffects {
+  constructor(private actions$: Actions,
+              private router: Router,
+              private location: Location) {
+  }
+
+  @Effect({dispatch: false})
+  navigate$ = this.actions$.ofType(RouterActions.GO).pipe(
+    map((action: RouterActions.Go) => action.payload),
+    tap(({path, query: queryParams, extras}) => {
+      this.router.navigate(path, {queryParams, ...extras});
+    })
+  );
+
+  @Effect({dispatch: false})
+  navigateBack$ = this.actions$.ofType(RouterActions.BACK).pipe(
+    tap(() => this.location.back())
+  );
+
+  @Effect({dispatch: false})
+  navigateForward$ = this.actions$.ofType(RouterActions.FORWARD).pipe(
+    tap(() => this.location.forward())
+  );
+}
+```
+
+### app.module.ts
+
+```TypeScript
+import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+
+import { CustomSerializer } from './store';
+
+@NgModule({
+  imports: [
+    StoreRouterConnectingModule,
+  ],
+  providers: [{provide: RouterStateSerializer, useClass: CustomSerializer}],
+})
+export class AppModule { }
+```
+
+## Examples
+
+### Dispatching an action
+
+```TypeScript
+@Effect()
+  handleCustomerSuccess$ = this.actions$
+    .ofType<customerActions.RemoveCustomerSuccess>(customerActions.REMOVE_CUSTOMER_SUCCESS)
+    .pipe(
+      map(customer => new fromRoot.Go({
+        path: ['/users'],
+      }))
+    );
+```
 
 # @ngrx/store-devtools
 
