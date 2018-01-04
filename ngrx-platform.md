@@ -50,6 +50,7 @@
       - [Performance](#performance)
   - [AsyncPipe](#asyncpipe)
   - [Meta Reducers](#meta-reducers)
+- [@ngrx/store-devtools](#ngrxstore-devtools)
 - [Resources](#resources)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -712,6 +713,24 @@ import { reducers } from './reducers';
   ]
 })
 export class AppModule {}
+```
+
+# @ngrx/store-devtools
+
+Introduces time-traveling debugging.
+
+[Documentation](https://github.com/ngrx/platform/blob/master/docs/store-devtools/README.md)
+
+```TypeScript
+// app.module.ts
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
+@NgModule({
+  imports: [
+    environment.production ? [] : StoreDevtoolsModule.instrument(),
+  ],
+})
+export class AppModule { }
 ```
 
 # Resources
