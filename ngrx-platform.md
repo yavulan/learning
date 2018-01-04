@@ -53,7 +53,7 @@
 - [@ngrx/effects](#ngrxeffects)
   - [API](#api)
     - [Actions](#actions)
-      - [Interface](#interface-3)
+    - [ofType](#oftype)
     - [@Effect](#effect)
       - [Non-dispatching effect](#non-dispatching-effect)
       - [Example](#example-2)
@@ -75,6 +75,7 @@
     - [some-routing.module.ts](#some-routingmodulets)
 - [@ngrx/store-devtools](#ngrxstore-devtools)
 - [Resources](#resources)
+- [Look for more](#look-for-more)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -178,7 +179,7 @@ interface Action {
 }
 ```
 
-*Note: `payload?: any;` allowed to be named differently.*
+*Note: `payload?: any;` allowed to be named differently or you can supply additional properties.*
 
 ### Example
 
@@ -193,6 +194,7 @@ import { Action } from '@ngrx/store';
 // Actions values has to be unique and easily readable.
 // So using namespace, e.g. `[Movie] Add`, might be a good idea.
 // Tip: you can use current module name for namsespace.
+// Tip#2: you can use enum instead of constants (see complex example).
 export const UPDATE = '[Person] Update';
 
 // --- 2. Create class for action. ---
@@ -219,46 +221,48 @@ export type ExampleAction
 // customers.action.ts
 import { Action } from '@ngrx/store';
 
-// Loading customers.
-export const LOAD_CUSTOMERS = '[Users] Load Customers';
-export const LOAD_CUSTOMERS_FAIL = '[Users] Load Customers Fail';
-export const LOAD_CUSTOMERS_SUCCESS = '[Users] Load Customers Success';
+export enum CustomersActionTypes {
+  LOAD_CUSTOMERS = '[Users] Load Customers',
+  LOAD_CUSTOMERS_FAIL = '[Users] Load Customers Fail',
+  LOAD_CUSTOMERS_SUCCESS = '[Users] Load Customers Success',
+  CREATE_CUSTOMER = '[Users] Create Customer',
+  CREATE_CUSTOMER_FAIL = '[Users] Create Customer Fail',
+  CREATE_CUSTOMER_SUCCESS = '[Users] Create Customer Success',
+  // ...Other CRUD actions.
+}
 
+// Loading customers.
 export class LoadCustomers implements Action {
-  readonly type = LOAD_CUSTOMERS;
+  readonly type = CustomersActionTypes.LOAD_CUSTOMERS;
 }
 
 export class LoadCustomersFail implements Action {
-  readonly type = LOAD_CUSTOMERS_FAIL;
+  readonly type = CustomersActionTypes.LOAD_CUSTOMERS_FAIL;
 
   constructor(public payload: any) {}
 }
 
 export class LoadCustomersSuccess implements Action {
-  readonly type = LOAD_CUSTOMERS_SUCCESS;
+  readonly type = CustomersActionTypes.LOAD_CUSTOMERS_SUCCESS;
 
   constructor(public payload: Customer[]) {}
 }
 
 // Creating customers.
-export const CREATE_CUSTOMER = '[Users] Create Customer';
-export const CREATE_CUSTOMER_FAIL = '[Users] Create Customer Fail';
-export const CREATE_CUSTOMER_SUCCESS = '[Users] Create Customer Success';
-
 export class CreateCustomer implements Action {
-  readonly type = CREATE_CUSTOMER;
+  readonly type = CustomersActionTypes.CREATE_CUSTOMER;
 
   constructor(public payload: Customer) {}
 }
 
 export class CreateCustomerFail implements Action {
-  readonly type = CREATE_CUSTOMER_FAIL;
+  readonly type = CustomersActionTypes.CREATE_CUSTOMER_FAIL;
 
   constructor(public payload: any) {}
 }
 
 export class CreateCustomerSuccess implements Action {
-  readonly type = CREATE_CUSTOMER_SUCCESS;
+  readonly type = CustomersActionTypes.CREATE_CUSTOMER_SUCCESS;
 
   constructor(public payload: Customer) {}
 }
@@ -339,7 +343,7 @@ export const getUserName = (state: ExampleState) => state.name;
 
 ```TypeScript
 // customers.reducer.ts
-import * as fromCustomers from '../actions/customers.actions';
+import { CustomersAction, CustomersActionTypes } from '../actions/customers.action';
 import { Customer } from '../../models/customer.model';
 
 export interface CustomerState {
@@ -354,44 +358,44 @@ export const initialState: CustomerState = {
   loading: false,
 };
 
-export function reducer(state: CustomerState = initialState, action: fromCustomers.CustomersAction): CustomerState {
+export function reducer(state = initialState, action: CustomersAction): CustomerState {
   switch (action.type) {
-    case fromCustomers.LOAD_CUSTOMERS: {
+    case CustomersActionTypes.LOAD_CUSTOMERS: {
       return {
         ...state,
-        loading: true,
+        loading: true
       };
     }
 
-    case fromCustomers.LOAD_CUSTOMERS_SUCCESS: {
+    case CustomersActionTypes.LOAD_CUSTOMERS_SUCCESS: {
       const customers = action.payload;
 
       const entities = customers.reduce((allEntities: { [id: number]: Customer }, customer: Customer) => {
         return {
           ...allEntities,
-          [customer.id]: customer,
+          [customer.id]: customer
         };
       }, {...state.entities});
 
       return {
         ...state,
-        loaded: true,
         loading: false,
+        loaded: true,
         entities,
       };
     }
 
-    case fromCustomers.LOAD_CUSTOMERS_FAIL: {
+    case CustomersActionTypes.LOAD_CUSTOMERS_FAIL: {
       return {
         ...state,
-        loaded: false,
         loading: false,
+        loaded: false
       };
     }
 
     // One of `switch`'s benefits is preventing duplication.
-    case fromCustomers.CREATE_CUSTOMER_SUCCESS:
-    case fromCustomers.UPDATE_CUSTOMER_SUCCESS: {
+    case CustomersActionTypes.CREATE_CUSTOMER_SUCCESS:
+    case CustomersActionTypes.UPDATE_CUSTOMER_SUCCESS: {
       const customer = action.payload;
       const entities = {
         ...state.entities,
@@ -404,15 +408,15 @@ export function reducer(state: CustomerState = initialState, action: fromCustome
       };
     }
 
-    case fromCustomers.REMOVE_CUSTOMER_SUCCESS: {
+    case CustomersActionTypes.REMOVE_CUSTOMER_SUCCESS: {
       const customer = action.payload;
 
-      // Desctucturing to remove customer.
+      // Desctucturing to remove.
       const {[customer.id]: removed, ...entities} = state.entities;
 
       return {
         ...state,
-        entities,
+        entities
       };
     }
 
@@ -441,8 +445,8 @@ interface Selector<AppState, SelectedState> {
 
 ### Advantages
 
-* reducing responsibility of components;
-* can be shared across the entire app.
+* Reduce responsibility of components.
+* Can be shared across the entire app.
 
 ### Functions
 
@@ -790,6 +794,7 @@ import { of } from 'rxjs/observable/of';
 import * as fromRoot from '../../../store';
 import * as fromServices from '../../services';
 import * as customerActions from '../actions/customers.action';
+import { CustomersActionTypes } from '../actions/customers.action';
 
 @Injectable()
 export class CustomersEffects {
@@ -799,7 +804,7 @@ export class CustomersEffects {
 
   @Effect()
   loadCustomers$ = this.actions$.pipe(
-    ofType<customerActions.LoadCustomers>(customerActions.LOAD_CUSTOMERS),
+    ofType<customerActions.LoadCustomers>(CustomersActionTypes.LOAD_CUSTOMERS),
     switchMap(() => {
       return this.customersService.getCustomers().pipe(
         map(customers => new customerActions.LoadCustomersSuccess(customers)),
@@ -810,7 +815,7 @@ export class CustomersEffects {
 
   @Effect()
   createCustomer$ = this.actions$.pipe(
-    ofType<customerActions.CreateCustomer>(customerActions.CREATE_CUSTOMER),
+    ofType<customerActions.CreateCustomer>(CustomersActionTypes.CREATE_CUSTOMER),
     map(action => action.payload),
     switchMap(customer => {
       return this.customersService.createCustomer(customer).pipe(
@@ -822,7 +827,7 @@ export class CustomersEffects {
 
   @Effect()
   createCustomerSuccess$ = this.actions$.pipe(
-    ofType<customerActions.CreateCustomerSuccess>(customerActions.CREATE_CUSTOMER_SUCCESS),
+    ofType<customerActions.CreateCustomerSuccess>(CustomersActionTypes.CREATE_CUSTOMER_SUCCESS),
     map(action => action.payload),
     map(customer => new fromRoot.Go({
       path: ['/users', customer.id]
@@ -831,7 +836,7 @@ export class CustomersEffects {
 
   @Effect()
   updateCustomer$ = this.actions$.pipe(
-    ofType<customerActions.UpdateCustomer>(customerActions.UPDATE_CUSTOMER),
+    ofType<customerActions.UpdateCustomer>(CustomersActionTypes.UPDATE_CUSTOMER),
     map(action => action.payload),
     switchMap(customer => {
       return this.customersService.updateCustomer(customer).pipe(
@@ -843,7 +848,7 @@ export class CustomersEffects {
 
   @Effect()
   removeCustomer$ = this.actions$.pipe(
-    ofType<customerActions.RemoveCustomer>(customerActions.REMOVE_CUSTOMER),
+    ofType<customerActions.RemoveCustomer>(CustomersActionTypes.REMOVE_CUSTOMER),
     map(action => action.payload),
     switchMap(customer => {
       return this.customersService.removeCustomer(customer).pipe(
@@ -856,7 +861,7 @@ export class CustomersEffects {
   @Effect()
   handleCustomerSuccess$ = this.actions$.pipe(
     ofType<customerActions.RemoveCustomerSuccess | customerActions.UpdateCustomerSuccess>
-    (customerActions.REMOVE_CUSTOMER_SUCCESS, customerActions.UPDATE_CUSTOMER_SUCCESS),
+    (CustomersActionTypes.REMOVE_CUSTOMER_SUCCESS, CustomersActionTypes.UPDATE_CUSTOMER_SUCCESS),
     map(customer => new fromRoot.Go({
       path: ['/users'],
     }))
@@ -893,12 +898,14 @@ into a `RouterStateUrl` to bind to the Store.
 import { Action } from '@ngrx/store';
 import { NavigationExtras } from '@angular/router';
 
-export const GO = '[Router] Go';
-export const BACK = '[Router] Back';
-export const FORWARD = '[Router] Forward';
+export enum RouterActionTypes {
+  GO = '[Router] Go',
+  BACK = '[Router] Back',
+  FORWARD = '[Router] Forward',
+}
 
 export class Go implements Action {
-  readonly type = GO;
+  readonly type = RouterActionTypes.GO;
   constructor(public payload: {
     path: any[];
     query?: object,
@@ -907,14 +914,14 @@ export class Go implements Action {
 }
 
 export class Back implements Action {
-  readonly type = BACK;
+  readonly type = RouterActionTypes.BACK;
 }
 
 export class Forward implements Action {
-  readonly type = FORWARD;
+  readonly type = RouterActionTypes.FORWARD;
 }
 
-export type Actions = Go | Back | Forward;
+export type RouterActions = Go | Back | Forward;
 ```
 
 ### reducers/index.ts
@@ -966,12 +973,13 @@ export class CustomSerializer implements fromRouter.RouterStateSerializer<Router
 
 ```TypeScript
 import { Injectable} from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { map, tap } from 'rxjs/operators';
 
-import * as RouterActions from '../actions/router.action';
+import { RouterActionTypes } from '../actions/router.action';
+import * as routerActions from '../actions/router.action';
 
 @Injectable()
 export class RouterEffects {
@@ -981,20 +989,23 @@ export class RouterEffects {
   }
 
   @Effect({dispatch: false})
-  navigate$ = this.actions$.ofType(RouterActions.GO).pipe(
-    map((action: RouterActions.Go) => action.payload),
+  navigate$ = this.actions$.pipe(
+    ofType<routerActions.Go>(routerActions.RouterActionTypes.GO),
+    map(action => action.payload),
     tap(({path, query: queryParams, extras}) => {
       this.router.navigate(path, {queryParams, ...extras});
     })
   );
 
   @Effect({dispatch: false})
-  navigateBack$ = this.actions$.ofType(RouterActions.BACK).pipe(
+  navigateBack$ = this.actions$.pipe(
+    ofType<routerActions.Back>(RouterActionTypes.BACK),
     tap(() => this.location.back())
   );
 
   @Effect({dispatch: false})
-  navigateForward$ = this.actions$.ofType(RouterActions.FORWARD).pipe(
+  navigateForward$ = this.actions$.pipe(
+    ofType<routerActions.Forward>(RouterActionTypes.FORWARD),
     tap(() => this.location.forward())
   );
 }
@@ -1022,12 +1033,13 @@ export class AppModule { }
 
 ```TypeScript
 @Effect()
-  handleCustomerSuccess$ = this.actions$.pipe(
-    ofType<customerActions.RemoveCustomerSuccess>(customerActions.REMOVE_CUSTOMER_SUCCESS),
-    map(customer => new fromRoot.Go({
-      path: ['/users'],
-    }))
-    );
+handleCustomerSuccess$ = this.actions$.pipe(
+  ofType<customerActions.RemoveCustomerSuccess | customerActions.UpdateCustomerSuccess>
+  (CustomersActionTypes.REMOVE_CUSTOMER_SUCCESS, CustomersActionTypes.UPDATE_CUSTOMER_SUCCESS),
+  map(customer => new fromRoot.Go({
+    path: ['/users'],
+  }))
+);
 ```
 
 # Check Store
