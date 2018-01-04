@@ -33,9 +33,16 @@
     - [Examples](#examples)
       - [Selector file](#selector-file)
       - [Inside component](#inside-component)
+  - [Structuring & Setting up](#structuring--setting-up)
+    - [Root index.ts](#root-indexts)
+    - [Actions and Selectors index.ts](#actions-and-selectors-indexts)
+    - [Effects](#effects)
+      - [index.ts](#indexts)
+      - [Inside module](#inside-module)
+    - [Reducers](#reducers)
+      - [index.ts](#indexts-1)
+      - [Inside module](#inside-module-1)
   - [Examples](#examples-1)
-    - [Reducers index](#reducers-index)
-    - [Inside the app.module](#inside-the-appmodule)
     - [Inside the component](#inside-the-component)
   - [Components categories](#components-categories)
     - [Smart (Container components)](#smart-container-components)
@@ -129,11 +136,8 @@ Store is **immutable (all changes produce new objects (shallow copies, not deep 
 
 ### What to store?
 
-Getting every keyDown() through the store and back to the view is just confusing and unnecessary.
-So transient states should be handled by local components states (such as React's).
-
->we don’t intend Redux to be used for all state. Just whatever seems significant to the app. I would argue inputs and animation state should be handled by *(state abstraction)*. Redux works better for things like fetched data and locally modified models.
-by @gaearon
+>"we don’t intend Redux to be used for all state. Just whatever seems significant to the app. I would argue inputs and animation state should be handled by *(state abstraction)*. Redux works better for things like fetched data and locally modified models."
+*by [@gaearon](https://github.com/gaearon)*
 
 ## Action
 
@@ -510,44 +514,103 @@ ngOnInit() {
 }
 ```
 
-## Examples
+## Structuring & Setting up
 
-### Reducers index
+![](assets/ngrx-platform-structure.png)
+
+### Root index.ts
 
 ```TypeScript
-// reducers/index.ts
-import { ActionReducerMap } from '@ngrx/store';
-
-import * as fromExample1 from './example1.reducer';
-import * as fromExample2 from './example2.reducer';
-
-export interface State {
-  example1: fromExample1.State;
-  example2: fromExample2.State;
-}
-
-export const reducers: ActionReducerMap<State> = {
-  example1: fromExample1.reducer,
-  example2: fromExample2.reducer,
-}
+// root index.ts
+export * from './actions';
+export * from './effects';
+export * from './reducers';
+export * from './selectors';
 ```
 
-### Inside the app.module
+### Actions and Selectors index.ts
 
 ```TypeScript
-import { StoreModule } from '@ngrx/store';
-import { reducers } from './reducers';
+// actions/index.ts
+// selectors/index.ts
+export * from './each-file';
+```
+
+### Effects
+
+#### index.ts
+
+```TypeScript
+// effects/index.ts
+import { SomeEffects } from './each.effect';
+
+export const effects: any[] = [
+  SomeEffects,
+  // ...
+];
+
+export * from './each.effect';
+```
+
+#### Inside module
+
+```TypeScript
+// some.module.ts
+import { EffectsModule } from '@ngrx/effects';
+import { effects } from './store';
 
 @NgModule({
   imports: [
-    StoreModule.forRoot(
-      reducers,
-      // { initialState: {} }
-      ),
+    EffectsModule.forFeature(effects),
   ],
 })
-export class AppModule {}
+export class SomeModule { }
 ```
+
+### Reducers
+
+#### index.ts
+
+```TypeScript
+// reducers/index.ts
+import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
+
+// Importing all reducers from current folder.
+import * as fromCustomers from './customers.reducer';
+import * as fromProoducts from './products.reducer';
+
+// Creating interface for feature (current module).
+export interface UsersState {
+  customers: fromCustomers.CustomerState;
+  products: fromProoducts.ProductsState;
+}
+
+// Creating object with imported reducers using feature interface and ActionReducerMap.
+export const reducers: ActionReducerMap<UsersState> = {
+  customers: fromCustomers.reducer,
+  products: fromProoducts.reducer,
+};
+
+// Creating feature selector for current module to use in selectors.
+export const getUsersState = createFeatureSelector<UsersState>('users');
+```
+
+#### Inside module
+
+```TypeScript
+// some.module.ts
+import { StoreModule } from '@ngrx/store';
+import { reducers } from './store';
+
+@NgModule({
+  imports: [
+    StoreModule.forFeature('users', reducers),
+  ],
+})
+export class SomeModule { }
+```
+
+## Examples
 
 ### Inside the component
 
@@ -653,9 +716,9 @@ export class AppModule {}
 
 # Resources
 
-* [NGRX Course: Store + Effects](https://ultimateangular.com/ngrx-store-effects) by @toddmotto.
-* [Comprehensive Introduction to @ngrx/store](https://gist.github.com/btroncone/a6e4347326749f938510) by @btroncone.
+* [NGRX Course: Store + Effects](https://ultimateangular.com/ngrx-store-effects) by [@toddmotto](https://github.com/toddmotto).
+* [Comprehensive Introduction to @ngrx/store](https://gist.github.com/btroncone/a6e4347326749f938510) by [@btroncone](https://github.com/btroncone).
 * [Documentation for @ngrx/platform](https://github.com/ngrx/platform/tree/master/docs) by [contributors](https://github.com/ngrx/platform/graphs/contributors).
-* [From Inactive to Reactive with ngrx](https://www.youtube.com/watch?v=cyaAhXHhxgk) by @brandonroberts and @MikeRyanDev.
-* [Reactive Angular2 with ngRx](https://www.youtube.com/watch?v=mhA7zZ23Odw) by @robwormald.
-* ($) [Build Redux Style Applications with Angular, RxJS, and ngrx/store](https://egghead.io/courses/build-redux-style-applications-with-angular-rxjs-and-ngrx-store) by @johnlindquist.
+* [From Inactive to Reactive with ngrx](https://www.youtube.com/watch?v=cyaAhXHhxgk) by [@brandonroberts](https://github.com/brandonroberts) and [@MikeRyanDev](https://github.com/MikeRyanDev).
+* [Reactive Angular2 with ngRx](https://www.youtube.com/watch?v=mhA7zZ23Odw) by [@robwormald](https://github.com/robwormald).
+* ($) [Build Redux Style Applications with Angular, RxJS, and ngrx/store](https://egghead.io/courses/build-redux-style-applications-with-angular-rxjs-and-ngrx-store) by [@johnlindquist](https://github.com/johnlindquist).
