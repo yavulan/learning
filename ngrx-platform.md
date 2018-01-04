@@ -151,7 +151,7 @@ Store is **immutable (all changes produce new objects (shallow copies, not deep 
 * Predictable state management (all mutations are explicit).
 * Performant (allows to disable Angular's change detection).
 * Debuggable (time lapse sequence of state changes can be compared one to another).
-* Testable (reducers are pure functions).
+* Testable (reducers are pure functions, components are simpler).
 * Root and feature module support.
 
 ### Drawbacks
@@ -161,7 +161,7 @@ Store is **immutable (all changes produce new objects (shallow copies, not deep 
 
 ### What to store?
 
->"we don’t intend Redux to be used for all state. Just whatever seems significant to the app. I would argue inputs and animation state should be handled by *(state abstraction)*. Redux works better for things like fetched data and locally modified models."
+>"we don't intend Redux to be used for all state. Just whatever seems significant to the app. I would argue inputs and animation state should be handled by *state abstraction*. Redux works better for things like fetched data and locally modified models."
 *by [@gaearon](https://github.com/gaearon)*
 
 ## Action
@@ -645,19 +645,19 @@ export class SomeModule { }
 ```TypeScript
 import { Store } from '@ngrx/store';
 
-import * as fromRoot from './reducers';
-import * as ExampleActions from './example-actions';
+import * as fromStore from '../../store';
+import { SomeModel } from '../../models/some.model';
 
 @Component({})
 export class ExampleComponent {
-    constructor(private store: Store<fromRoot.State>) {}
+    constructor(private store: Store<fromStore.State>) {}
 
-    setExample(input): void {
-        this.store.dispatch(new ExampleActions.ActionName(input));
+    setExample(input: SomeModel): void {
+        this.store.dispatch(new fromStore.ActionName(input));
     }
 
-    getExample(): Observable<any> {
-        return this.store.select(fromRoot.selectResults);
+    getExample(): Observable<SomeModel[]> {
+        return this.store.select<SomeModel[]>(fromStore.selectResults);
     }
 }
 ```
@@ -972,7 +972,7 @@ export class CustomSerializer implements fromRouter.RouterStateSerializer<Router
 ### effects/router.effects.ts
 
 ```TypeScript
-import { Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
