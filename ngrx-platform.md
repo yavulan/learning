@@ -57,7 +57,7 @@
     - [@Effect](#effect)
       - [Non-dispatching effect](#non-dispatching-effect)
       - [Example](#example-2)
-    - [Inside module](#inside-module-2)
+  - [Inside module](#inside-module-2)
 - [@ngrx/router-store](#ngrxrouter-store)
   - [Custom serializer](#custom-serializer)
   - [Boilerplate](#boilerplate)
@@ -69,7 +69,7 @@
     - [Dispatching an action](#dispatching-an-action)
 - [Check Store](#check-store)
   - [Example](#example-3)
-    - [Guard file](#guard-file)
+    - [guard file](#guard-file)
     - [guards/index.ts](#guardsindexts)
     - [some.module.ts](#somemodulets)
     - [some-routing.module.ts](#some-routingmodulets)
@@ -179,7 +179,7 @@ interface Action {
 }
 ```
 
-*Note: `payload?: any;` allowed to be named differently or you can supply additional properties.*
+*Note: `payload?: any;` allowed to be named differently and you can supply additional properties.*
 
 ### Example
 
@@ -869,7 +869,7 @@ export class CustomersEffects {
 }
 ```
 
-### Inside module
+## Inside module
 [Inside module](#inside-module)
 
 # @ngrx/router-store
@@ -1032,6 +1032,8 @@ export class AppModule { }
 ### Dispatching an action
 
 ```TypeScript
+import * as fromRoot from '../../../store';
+
 @Effect()
 handleCustomerSuccess$ = this.actions$.pipe(
   ofType<customerActions.RemoveCustomerSuccess | customerActions.UpdateCustomerSuccess>
@@ -1048,7 +1050,7 @@ To ensure that required Store keys is available on a current route (even if page
 
 ## Example
 
-### Guard file
+### guard file
 
 ```TypeScript
 // customer-exists.guard.ts
