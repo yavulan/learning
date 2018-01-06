@@ -74,6 +74,20 @@
     - [guards/index.ts](#guardsindexts)
     - [some.module.ts](#somemodulets)
     - [some-routing.module.ts](#some-routingmodulets)
+- [@ngrx/entity](#ngrxentity)
+  - [Entity Adapter](#entity-adapter)
+    - [createEntityAdapter](#createentityadapter)
+      - [Example](#example-4)
+  - [EntityState](#entitystate)
+    - [Interface](#interface-3)
+    - [Example](#example-5)
+  - [Entity Adapter Methods](#entity-adapter-methods)
+    - [getInitialState](#getinitialstate)
+      - [Example](#example-6)
+    - [Adapter Collection Methods](#adapter-collection-methods)
+      - [Example](#example-7)
+  - [Entity Selectors](#entity-selectors)
+    - [Example](#example-8)
 - [@ngrx/store-devtools](#ngrxstore-devtools)
 - [Resources](#resources)
 - [Look for more](#look-for-more)
@@ -1173,6 +1187,137 @@ export const ROUTES: Routes = [
   },
 ```
 
+# @ngrx/entity
+
+Provides us with **Entity State adapter** for managing record collections in a performant and type-safe way.
+
+In examples \([1](#complex-1), [2](#selector-file)\) hereinabove we managed collections by ourselves.
+In examples for this section we'll try to change those examples to use @ngrx/entity.
+
+## Entity Adapter
+
+Allows to **write reducer operations quickly** and to **generate selectors automatically**.
+
+### createEntityAdapter
+
+Takes an object for configuration with properties:
+
+* **selectId** - a method for selecting the primary id for the collection;
+* **sortComparer** - a compare function used to sort the collection in case the collection needs to be sorted before being displayed.
+
+#### Example
+
+```ts
+// customers.reducer.ts
+export const customerAdapter: EntityAdapter<Customer> = createEntityAdapter<Customer>();
+```
+
+## EntityState
+
+Predefined generic interface for a given entity collection.
+
+### Interface
+
+```ts
+interface EntityState<V> {
+  // An array of all the primary ids in the collection.
+  ids: string[] | number[];
+
+  // A dictionary of entities in the collection indexed by the primary id.
+  entities: { [id: string | id: number]: V };
+}
+```
+
+### Example
+
+```ts
+// customers.reducer.ts
+export interface CustomerState extends EntityState<Customer> {
+  // Additional entities state properties.
+  loaded: boolean;
+  loading: boolean;
+}
+```
+
+## Entity Adapter Methods
+
+### getInitialState
+
+Returns the initialState for entity state based on the provided type.
+
+#### Example
+
+```ts
+// customers.reducer.ts
+export const initialState: CustomerState = customerAdapter.getInitialState({
+  // Additional entity state properties.
+  loaded: false,
+  loading: false,
+});
+```
+
+### Adapter Collection Methods
+
+[List of methods](https://github.com/ngrx/platform/blob/master/docs/entity/adapter.md#adapter-collection-methods)
+
+#### Example
+
+```ts
+// customers.reducer.ts
+export function reducer(state = initialState, action: CustomersAction): CustomerState {
+  switch (action.type) {
+    case CustomersActionTypes.LOAD_CUSTOMERS_SUCCESS: {
+      return customerAdapter.addMany(action.payload.customers, {
+        ...state,
+        loaded: true,
+        loading: false,
+      });
+    }
+
+    case CustomersActionTypes.CREATE_CUSTOMER_SUCCESS: {
+      return customerAdapter.addOne(action.payload.customer, state);
+    }
+
+    case CustomersActionTypes.UPDATE_CUSTOMER_SUCCESS: {
+      return customerAdapter.updateOne(action.payload.customer, state);
+    }
+
+    case CustomersActionTypes.REMOVE_CUSTOMER_SUCCESS: {
+      return customerAdapter.removeOne(action.payload.customer.id, state);
+    }
+
+    default: {
+      return state;
+    }
+  }
+}
+```
+
+## Entity Selectors
+
+The `getSelectors` method returned by the entity adapter provides functions for selecting information from the entity.
+
+Takes a selector function as argument to select the piece of state for a defined entity.
+
+### Example
+
+```ts
+// customers.selecttor.ts
+import { createSelector } from '@ngrx/store';
+
+import * as fromFeature from '../reducers';
+import * as fromCustomers from '../reducers/customers.reducer';
+
+export const selectCustomersState = createSelector(fromFeature.selectUsersState, (state: fromFeature.UsersState) => state.customers);
+
+export const {
+  selectIds: selectCustomersIds,
+  selectEntities: selectCustomersEntities,
+  selectAll: selectAllCustomers,
+  selectTotal: selectCustomersTotal,
+} = fromCustomers.customerAdapter.getSelectors(selectCustomersState);
+```
+
 # @ngrx/store-devtools
 
 Introduces time-traveling debugging.
@@ -1198,6 +1343,7 @@ export class AppModule { }
 * [Documentation for @ngrx/platform](https://github.com/ngrx/platform/tree/master/docs) by [contributors](https://github.com/ngrx/platform/graphs/contributors).
 * [From Inactive to Reactive with ngrx](https://www.youtube.com/watch?v=cyaAhXHhxgk) by [@brandonroberts](https://github.com/brandonroberts) and [@MikeRyanDev](https://github.com/MikeRyanDev).
 * [Reactive Angular2 with ngRx](https://www.youtube.com/watch?v=mhA7zZ23Odw) by [@robwormald](https://github.com/robwormald).
+* [Introducing @ngrx/entity](https://medium.com/ngrx/introducing-ngrx-entity-598176456e15) by [@MikeRyanDev](https://github.com/MikeRyanDev).
 * ($) [Build Redux Style Applications with Angular, RxJS, and ngrx/store](https://egghead.io/courses/build-redux-style-applications-with-angular-rxjs-and-ngrx-store) by [@johnlindquist](https://github.com/johnlindquist).
 
 # Look for more
