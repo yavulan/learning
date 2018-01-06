@@ -30,6 +30,7 @@
     - [Functions](#functions)
       - [createFeatureSelector](#createfeatureselector)
       - [createSelector](#createselector)
+    - [Reset Memoized Selector](#reset-memoized-selector)
     - [Examples](#examples)
       - [Selector file](#selector-file)
       - [Inside component](#inside-component)
@@ -95,7 +96,7 @@ A snapshot of store at any point supply a complete representation of the relevan
 
 **Just to give an idea, it's not a real implementation!**
 
-```TypeScript
+```ts
 class Dispatcher extends Rx.Subject {
   dispatch(value: any): void {
     this.next(value);
@@ -118,12 +119,15 @@ class Store<State> extends Rx.BehaviorSubject<State> {
         this.dispatcher.dispatch(action);
     }
 
-    select<T>(key : string | (v: State) => T): Observable<T> {
+    select<T>(mapFn : (state: State) => T | string): Observable<T> {
         return this
             .map(state => state[key])
             .distinctUntilChanged();
     }
 }
+
+// Select is also available as lettable operator for rxjs.
+function select<T>(mapFn : (state: State) => T | string): Observable<T>;
 ```
 
 ### Core concepts
@@ -172,7 +176,7 @@ Store is **immutable (all changes produce new objects (shallow copies, not deep 
 
 ### Interface
 
-```TypeScript
+```ts
 interface Action {
     type: string;
     payload?: any;
@@ -185,7 +189,7 @@ interface Action {
 
 #### Simple
 
-```TypeScript
+```ts
 // example.action.ts
 import { Action } from '@ngrx/store';
 
@@ -217,9 +221,12 @@ export type ExampleAction
 
 #### Complex
 
-```TypeScript
+```ts
 // customers.action.ts
 import { Action } from '@ngrx/store';
+import { Update } from '@ngrx/entity';
+
+import { Customer } from '../../models/customer.model';
 
 export enum CustomersActionTypes {
   LOAD_CUSTOMERS = '[Users] Load Customers',
@@ -245,14 +252,14 @@ export class LoadCustomersFail implements Action {
 export class LoadCustomersSuccess implements Action {
   readonly type = CustomersActionTypes.LOAD_CUSTOMERS_SUCCESS;
 
-  constructor(public payload: Customer[]) {}
+  constructor(public payload: { customers: Customer[] }) {}
 }
 
 // Creating customers.
 export class CreateCustomer implements Action {
   readonly type = CustomersActionTypes.CREATE_CUSTOMER;
 
-  constructor(public payload: Customer) {}
+  constructor(public payload: { customer: Customer }) {}
 }
 
 export class CreateCustomerFail implements Action {
@@ -264,7 +271,7 @@ export class CreateCustomerFail implements Action {
 export class CreateCustomerSuccess implements Action {
   readonly type = CustomersActionTypes.CREATE_CUSTOMER_SUCCESS;
 
-  constructor(public payload: Customer) {}
+  constructor(public payload: { customer: Customer }) {}
 }
 
 // ...Other CRUD actions.
@@ -290,7 +297,7 @@ Combination of reducers makes up a representation of application state at any gi
 
 ### Interface
 
-```TypeScript
+```ts
 interface Reducer<State> {
     (state: State, action: Action): State;
 }
@@ -306,7 +313,7 @@ interface Reducer<State> {
 
 #### Simple
 
-```TypeScript
+```ts
 // example.reducer.ts
 
 // --- 1. Import corresponding actions. ---
@@ -336,12 +343,12 @@ export function reducer(state: ExampleState = initialState, action: fromExample.
 }
 
 // --- 5. Create selectors for each property in interface. ---
-export const getUserName = (state: ExampleState) => state.name;
+export const selectUserName = (state: ExampleState) => state.name;
 ```
 
 #### Complex
 
-```TypeScript
+```ts
 // customers.reducer.ts
 import { CustomersAction, CustomersActionTypes } from '../actions/customers.action';
 import { Customer } from '../../models/customer.model';
@@ -426,9 +433,9 @@ export function reducer(state = initialState, action: CustomersAction): Customer
   }
 }
 
-export const getCustomersEntities = (state: CustomerState) => state.entities;
-export const getCustomersLoaded = (state: CustomerState) => state.loaded;
-export const getCustomersLoading = (state: CustomerState) => state.loading;
+export const selectCustomersEntities = (state: CustomerState) => state.entities;
+export const selectCustomersLoaded = (state: CustomerState) => state.loaded;
+export const selectCustomersLoading = (state: CustomerState) => state.loading;
 ```
 
 ## Selectors
@@ -437,7 +444,7 @@ export const getCustomersLoading = (state: CustomerState) => state.loading;
 
 ### Interface
 
-```TypeScript
+```ts
 interface Selector<AppState, SelectedState> {
     (state: AppState): SelectedState;
 }
@@ -460,14 +467,14 @@ This can provide performance benefits (memoization).
 Is a convenience method for returning a top level feature state.
 Returns a typed selector function for a feature slice of state.
 
-```TypeScript
+```ts
 // store/reducers/index.ts
 import { createFeatureSelector } from '@ngrx/store';
 
-export const getUsersState = createFeatureSelector<UsersState>('users');
+export const selectUsersState = createFeatureSelector<UsersState>('users');
 ```
 
-```TypeScript
+```ts
 // users.module.ts
 @NgModule({
   imports: [
@@ -480,7 +487,7 @@ export const getUsersState = createFeatureSelector<UsersState>('users');
 
 Returns a callback function for selecting a slice of state.
 
-```TypeScript
+```ts
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 export interface FeatureState {
@@ -491,11 +498,25 @@ export const selectFeature = createFeatureSelector<FeatureState>('feature');
 export const selectFeatureCount = createSelector(selectFeature, (state: FeatureState) => state.counter);
 ```
 
+### Reset Memoized Selector
+
+When the selector is invoked with the same arguments it will return the memoized value.
+A selector's memoized value stays in memory indefinitely.
+
+If the memoized value is no longer needed it's possible to reset the memoized value to null to release it from memory by invoking the `release` method on the selector.
+
+```ts
+// Memoized value of selectSome is now null.
+selectSome.release()
+```
+
+[More in documentation](https://github.com/ngrx/platform/blob/master/docs/store/selectors.md#reset-memoized-selector)
+
 ### Examples
 
 #### Selector file
 
-```TypeScript
+```ts
 // customers.selector.ts
 import { createSelector } from '@ngrx/store';
 import { Customer } from '../../models/customer.model';
@@ -505,26 +526,26 @@ import * as fromFeature from '../reducers';
 import * as fromCustomers from '../reducers/customers.reducer';
 import * as fromProducts from './products.selectors';
 
-export const getCustomersState = createSelector(fromFeature.getUsersState, (state: fromFeature.UsersState) => state.customers);
+export const selectCustomersState = createSelector(fromFeature.selectUsersState, (state: fromFeature.UsersState) => state.customers);
 
-export const getCustomersEntities = createSelector(getCustomersState, fromCustomers.getCustomersEntities);
+export const selectCustomersEntities = createSelector(selectCustomersState, fromCustomers.selectCustomersEntities);
 
-export const getSelectedCustomer = createSelector(getCustomersEntities, fromRoot.getRouterState, (entities, router): Customer => {
+export const selectSelectedCustomer = createSelector(selectCustomersEntities, fromRoot.selectRouterState, (entities, router): Customer => {
   return router.state && entities[router.state.params.customerId];
 });
 
-export const getAllCustomers = createSelector(getCustomersEntities, (entities) => {
+export const selectAllCustomers = createSelector(selectCustomersEntities, (entities) => {
   return Object.keys(entities).map(id => entities[id]);
 });
 
-export const getCustomersLoaded = createSelector(getCustomersState, fromCustomers.getCustomersLoaded);
+export const selectCustomersLoaded = createSelector(selectCustomersState, fromCustomers.selectCustomersLoaded);
 
-export const getCustomersLoading = createSelector(getCustomersState, fromCustomers.getCustomersLoading);
+export const selectCustomersLoading = createSelector(selectCustomersState, fromCustomers.selectCustomersLoading);
 
-export const getCustomerVisualised = createSelector(
-  getSelectedCustomer,
-  fromProducts.getProductsEntities,
-  fromProducts.getSelectedProducts,
+export const selectCustomerVisualised = createSelector(
+  selectSelectedCustomer,
+  fromProducts.selectProductsEntities,
+  fromProducts.selectSelectedProducts,
   (customer, productsEntities, selectedProducts) => {
     const products = selectedProducts.map(id => productsEntities[id]);
     return {...customer, products};
@@ -534,11 +555,11 @@ export const getCustomerVisualised = createSelector(
 
 #### Inside component
 
-```TypeScript
+```ts
 import * as fromStore from '../../store';
 
 ngOnInit() {
-  this.customers$ = this.store.select<Customer[]>(fromStore.getAllCustomers);
+  this.customers$ = this.store.select<Customer[]>(fromStore.selectAllCustomers);
 }
 ```
 
@@ -548,7 +569,7 @@ ngOnInit() {
 
 ### Root index.ts
 
-```TypeScript
+```ts
 // root index.ts
 export * from './actions';
 export * from './effects';
@@ -558,7 +579,7 @@ export * from './selectors';
 
 ### Actions and Selectors index.ts
 
-```TypeScript
+```ts
 // actions/index.ts
 // selectors/index.ts
 export * from './each-file';
@@ -568,7 +589,7 @@ export * from './each-file';
 
 #### index.ts
 
-```TypeScript
+```ts
 // effects/index.ts
 import { SomeEffects } from './each.effect';
 
@@ -582,7 +603,7 @@ export * from './each.effect';
 
 #### Inside module
 
-```TypeScript
+```ts
 // some.module.ts
 import { EffectsModule } from '@ngrx/effects';
 import { effects } from './store';
@@ -599,7 +620,7 @@ export class SomeModule { }
 
 #### index.ts
 
-```TypeScript
+```ts
 // reducers/index.ts
 import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
 
@@ -620,12 +641,12 @@ export const reducers: ActionReducerMap<UsersState> = {
 };
 
 // Creating feature selector for current module to use in selectors.
-export const getUsersState = createFeatureSelector<UsersState>('users');
+export const selectUsersState = createFeatureSelector<UsersState>('users');
 ```
 
 #### Inside module
 
-```TypeScript
+```ts
 // some.module.ts
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './store';
@@ -642,7 +663,7 @@ export class SomeModule { }
 
 ### Inside the component
 
-```TypeScript
+```ts
 import { Store } from '@ngrx/store';
 
 import * as fromStore from '../../store';
@@ -709,7 +730,7 @@ This pipe also handles unsubscribing (no need to manually cleaning up subscripti
 
 `metaReducers` configuration option allows to provide an array of meta-reducers that are **composed from right to left**.
 
-```TypeScript
+```ts
 // meta-reducers.ts
 import { ActionReducer, MetaReducer } from '@ngrx/store';
 import { reducers } from './reducers';
@@ -727,7 +748,7 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
 export const metaReducers: MetaReducer<any>[] = [debug];
 ```
 
-```TypeScript
+```ts
 // app.module.ts
 import { StoreModule } from '@ngrx/store';
 
@@ -758,7 +779,7 @@ Isolates side effect from components, so components becomes easier to test.
 
 `Actions` is an Observable to inject in a constructor.
 
-```TypeScript
+```ts
 import { Actions } from '@ngrx/effects';
 
 constructor(private actions$: Actions) { }
@@ -766,7 +787,7 @@ constructor(private actions$: Actions) { }
 
 ### ofType
 
-```TypeScript
+```ts
 export declare function ofType<T extends Action>(...allowedTypes: string[]): (source$: Actions<T>) => Actions<T>;
 ```
 
@@ -778,13 +799,13 @@ export declare function ofType<T extends Action>(...allowedTypes: string[]): (so
 
 When there is no need to dispatch a new action from the effect:
 
-```TypeScript
+```ts
 @Effect({dispatch: false})
 ```
 
 #### Example
 
-```TypeScript
+```ts
 // customers.effects.ts
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
@@ -894,7 +915,7 @@ into a `RouterStateUrl` to bind to the Store.
 
 ### actions/router.actions.ts
 
-```TypeScript
+```ts
 import { Action } from '@ngrx/store';
 import { NavigationExtras } from '@angular/router';
 
@@ -926,7 +947,7 @@ export type RouterActions = Go | Back | Forward;
 
 ### reducers/index.ts
 
-```TypeScript
+```ts
 import { ActivatedRouteSnapshot, Params, RouterStateSnapshot } from '@angular/router';
 import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
 
@@ -949,7 +970,7 @@ export const reducers: ActionReducerMap<State> = {
   routerReducer: fromRouter.routerReducer
 };
 
-export const getRouterState = createFeatureSelector<fromRouter.RouterReducerState<RouterStateUrl>>('routerReducer');
+export const selectRouterState = createFeatureSelector<fromRouter.RouterReducerState<RouterStateUrl>>('routerReducer');
 
 export class CustomSerializer implements fromRouter.RouterStateSerializer<RouterStateUrl> {
   serialize(routerState: RouterStateSnapshot): RouterStateUrl {
@@ -971,7 +992,7 @@ export class CustomSerializer implements fromRouter.RouterStateSerializer<Router
 
 ### effects/router.effects.ts
 
-```TypeScript
+```ts
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
@@ -1013,7 +1034,7 @@ export class RouterEffects {
 
 ### app.module.ts
 
-```TypeScript
+```ts
 import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 
 import { CustomSerializer } from './store';
@@ -1031,7 +1052,7 @@ export class AppModule { }
 
 ### Dispatching an action
 
-```TypeScript
+```ts
 import * as fromRoot from '../../../store';
 
 @Effect()
@@ -1052,11 +1073,11 @@ To ensure that required Store keys is available on a current route (even if page
 
 ### guard file
 
-```TypeScript
+```ts
 // customer-exists.guard.ts
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { filter, take, tap, map, switchMap } from 'rxjs/operators';
 
@@ -1079,7 +1100,8 @@ export class CustomerExistsGuard implements CanActivate {
   }
 
   hasCustomer(id: number): Observable<boolean> {
-    return this.store.select(fromStore.getCustomersEntities).pipe(
+    return this.store.pipe(
+      select(fromStore.selectCustomersEntities),
       map((entities: { [key: number]: Customer }) => Boolean(entities[id])),
       // Unsubscribe automatically.
       take(1)
@@ -1088,7 +1110,8 @@ export class CustomerExistsGuard implements CanActivate {
 
   // Method is similar across all Store-dealing guards.
   checkStore(): Observable<boolean> {
-    return this.store.select(fromStore.getCustomersLoaded).pipe(
+    return this.store.pipe(
+      select(fromStore.selectCustomersLoaded),
       tap(loaded => {
         if (!loaded) {
           this.store.dispatch(new fromStore.LoadCustomers());
@@ -1103,9 +1126,11 @@ export class CustomerExistsGuard implements CanActivate {
 }
 ```
 
+*Note: select is available for usage as operator to pipe on store, as seen in this example.*
+
 ### guards/index.ts
 
-```TypeScript
+```ts
 import { SomeGuard } from './each.guard';
 
 export const guards: any[] = [
@@ -1118,7 +1143,7 @@ export * from './each.guard';
 
 ### some.module.ts
 
-```TypeScript
+```ts
 import { NgModule } from '@angular/core';
 
 // services
@@ -1135,7 +1160,7 @@ export class SomeModule { }
 
 ### some-routing.module.ts
 
-```TypeScript
+```ts
 // guards
 import * as fromGuards from './guards';
 
@@ -1154,7 +1179,7 @@ Introduces time-traveling debugging.
 
 [Documentation](https://github.com/ngrx/platform/blob/master/docs/store-devtools/README.md)
 
-```TypeScript
+```ts
 // app.module.ts
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
