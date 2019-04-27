@@ -44,6 +44,10 @@ git config --get core.excludesfile
 cd %USERPROFILE%
 type NUL > .gitignore_global
 git config --global core.excludesfile "%USERPROFILE%/.gitignore_global
+
+# On Mac
+git config --global core.excludesfile ~/.gitignore_global
+echo *.DS_Store >> ~/.gitignore_global
 ```
 
 ## Commit
